@@ -690,25 +690,61 @@ if __name__ == "__main__":
 ######################################################################
 
 from fastapi import FastAPI, HTTPException
+from typing import List  #For optional type hinting in http_422()
 
 app = FastAPI()
 conn = connect()
+
+def http_404():
+    raise HTTPException(
+            status_code=404,
+            detail="Failed to fetch..."
+        )
+    
+def http_422(fields : List[str]):
+    raise HTTPException(
+            status_code=422,
+            detail="Please provide values for the following fields: " + str(fields)
+        )
 
 @app.get("/seq/test")
 async def get_tester():
     return {"detail": "test"}
 
-# What a get method would look like
-
 @app.get("/seq/{ac}", status_code=200)
 async def get_seq(ac : str, start_i=None, end_i=None):
     try:
         return conn.seqfetcher.fetch_seq(ac, start_i, end_i)
-    except HGVSDataNotAvailableError:
-        raise HTTPException(
-            status_code=404,
-            detail="Failed to fetch..."
-        )
+    except HGVSDataNotAvailableError: http_404()
+        
+@app.get("/acs-for-protein/{seq}", status_code=200) #nt
+async def get_acs_for_protein(seq : str):
+    md5 = seq_md5(seq)
+    acs = [r["ac"] for r in conn._fetchall(conn._queries["acs_for_protein_md5"], [md5])] + ["MD5_" + md5]
+    return (http_404() if len(acs) == 0 else acs)
+    
+@app.get("/gene_info/{gene}", status_code=200)
+async def get_gene_info(gene : str):
+    gene_info = conn._fetchone(conn._queries["gene_info"], [gene])
+    return (http_404() if gene_info == None else gene_info)
+    
+#@app.get("/get-tx-exons/{}") # do last
+
+@app.get("/tx-for-gene/{gene}", status_code=200)
+async def get_tx_for_gene(gene : str):
+    tx = conn._fetchall(conn._queries["tx_for_gene"], [gene])
+    return (http_404() if len(tx) == 0 else tx)
+
+@app.get("/tx-for-region/{alt_ac}", status_code=200) #nt
+async def get_tx_for_region(alt_ac, alt_aln_method=None, start_i=None, end_i=None):
+    params = ["alt_aln_method", "start_i", "end_i"]
+    blank_fields = []
+    for param in params: 
+        if locals()[param] == None: blank_fields.append(param)
+    if not len(blank_fields) == 0: http_422(blank_fields)
+    
+    tx = conn.get_alignments_for_region(alt_ac=alt_ac, start_i=start_i, end_i=end_i, alt_aln_method=alt_aln_method)
+    return (http_404() if len(tx) == 0 else tx)
 
 
 ######################################################################
