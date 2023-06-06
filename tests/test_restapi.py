@@ -73,7 +73,7 @@ def test_tx_exons_e_params():
 def test_tx_exons_ne_params():
     """Nonexisting seq with missing param"""
     url = base + "/tx_exons/NM_199425.2/fake"
-    assert requests.get(url).status_code == 422
+    assert requests.get(url).status_code == 422 #All 422s check for params before checking if region exists
     
 def test_tx_for_gene_e():
     """Existing gene."""
@@ -103,7 +103,7 @@ def test_tx_region_e_params():
 def test_tx_region_ne_params():
     """Nonexisting region with only some params."""
     url = base + "/tx_for_region/fake?alt_aln_method=splign"
-    assert requests.get(url).status_code == 422 #Checks for params before checking if region exists
+    assert requests.get(url).status_code == 422 
     
 def test_alignments_for_region_e():
     """Existing region."""
@@ -123,7 +123,7 @@ def test_alignmemts_for_region_e_params():
 def test_alignments_for_region_ne_params():
     """Nonexisting region with only some params."""
     url = base + "/alignments_for_region/fake?alt_aln_method=splign"
-    assert requests.get(url).status_code == 422 #Checks for params before checking if region exists
+    assert requests.get(url).status_code == 422
     
 def test_tx_identity_info_e():
     """Existing transcript."""
@@ -162,7 +162,7 @@ def test_tx_mapping_options_e():
     
 def test_tx_mapping_options_e_none():
     """Existing transcripts no alignments."""
-    url = base + "/tx_mapping_options/NM_..." #Is there an example of a tx_ac with no alginments? (Should 204 even be a possible error code?)
+    url = base + "/tx_mapping_options/NM_..." #Is there an example of a tx_ac with no alginments?
     assert requests.get(url).status_code == 200 #Empty list
     
 def test_tx_mapping_options_ne():
@@ -178,12 +178,12 @@ def test_similar_transcripts_e():
 def test_similar_transcripts_e_none():
     """Existing transcripts no similar transcripts."""
     url = base + "/similar_transcripts/NM_..." #Need example
-    assert requests.get(url).status_code == 200 #Empty list
+    assert requests.get(url).status_code == 200 #None/null
     
 def test_similar_transcripts_ne():
     """Nonexisting transcript."""
     url = base + "/similar_transcripts/fake"
-    assert requests.get(url).status_code == 200 #Empty list
+    assert requests.get(url).status_code == 200 #None/null
     
 def test_pro_ac_for_tx_ac_e():
     """Existing transcript."""
@@ -193,12 +193,12 @@ def test_pro_ac_for_tx_ac_e():
 def test_pro_ac_for_tx_ac_e_none():
     """Existing transcripts no associated proteins."""
     url = base + "/pro_ac_for_tx_ac/NM_..." #Need example
-    assert requests.get(url).status_code == 200 #Empty list
+    assert requests.get(url).status_code == 200 #Empty string
     
 def test_pro_ac_for_tx_ac_ne():
     """Nonexisting transcript."""
     url = base + "/pro_ac_for_tx_ac/fake"
-    assert requests.get(url).status_code == 200 #Empty list 
+    assert requests.get(url).status_code == 200 #None/null
     
 def test_assembly_map_e():
     """Existing assembly name."""
