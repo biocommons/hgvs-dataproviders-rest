@@ -65,15 +65,15 @@ def test_tx_exons_ne():
     url = base + "/tx_exons/NM_199425.2/fake?alt_aln_method=splign"
     assert requests.get(url).status_code == 404
     
-def text_tx_exons_e_params():
+def test_tx_exons_e_params():
     """Existing seqs with missing param"""
     url = base + "/tx_exons/NM_199425.2/NC_000020.10"
     assert requests.get(url).status_code == 422
     
-def text_tx_exons_ne_params():
+def test_tx_exons_ne_params():
     """Nonexisting seq with missing param"""
     url = base + "/tx_exons/NM_199425.2/fake?alt_aln_method=splign"
-    assert requests.get(url).status_code == 422  #FastAPI might do this for you
+    assert requests.get(url).status_code == 422
     
 def test_tx_for_gene_e():
     """Existing gene."""
