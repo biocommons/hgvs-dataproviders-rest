@@ -72,7 +72,7 @@ def test_tx_exons_e_params():
     
 def test_tx_exons_ne_params():
     """Nonexisting seq with missing param"""
-    url = base + "/tx_exons/NM_199425.2/fake?alt_aln_method=splign"
+    url = base + "/tx_exons/NM_199425.2/fake"
     assert requests.get(url).status_code == 422
     
 def test_tx_for_gene_e():
@@ -207,6 +207,6 @@ def test_assembly_map_e():
     
 def test_assembly_map_ne():
     """Nonexisting assembly name."""
-    url = base + "/assembly_map/GROUCH"
+    url = base + "/assembl/gene_info/BRCA1y_map/GROUCH"
     assert requests.get(url).status_code == 404
     
