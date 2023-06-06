@@ -46,31 +46,31 @@ class Transcript_Exon(BaseModel):
     alt_start_i: int
     alt_end_i: int
     cigar: str
-    mystery1: None #??
-    mystery2: None #??
+    tx_aseq: None #Out of 5595819 rows in the tx_exon_aln_v table, this is always null/None
+    alt_aseq: None #Same
     tes_exon_set_id: int
     aes_exon_set_id: int
     tx_exon_id: int
     alt_exon_id: int
-    mystery3: int #??
+    exon_aln_id: int
     
 class Transcript(BaseModel):
+    hgnc: str
+    cds_start_i: int
+    cds_end_i: int
     tx_ac: str
     alt_ac: str
     alt_aln_method: str
-    cds_start_i: int
-    cds_end_i: int
     lengths: Optional[List[int]]
-    hgnc: str
 
 class Similar_Transcript(BaseModel):
     tx_ac1: str
     tx_ac2: str
-    mystery1: bool
-    m2: Optional[bool]
-    m3: bool
-    m4: Optional[bool]
-    m5: Optional[bool]
+    hgnc_eq: bool
+    cds_eq: Optional[bool]
+    es_fp_eq: bool
+    cds_es_fp_eq: Optional[bool]
+    cds_exon_lengths_fp_eq: Optional[bool]
     
 class Alignment_Set(BaseModel):
     tx_ac: str
@@ -84,13 +84,13 @@ async def seq(ac : str, start_i: int | None = None, end_i: int | None = None) ->
     except HGVSDataNotAvailableError as e: http_404(e)
      
 @app.get("/acs_for_protein_seq/{seq}")
-async def acs_for_protein_seq(seq : str) -> List | None:
+async def acs_for_protein_seq(seq : str) -> List:
     try:
         return conn.get_acs_for_protein_seq(seq)
     except RuntimeError as e: http_404(e)
     
 @app.get("/gene_info/{gene}")
-async def gene_info(gene : str) -> Gene | None: #-> List | None:
+async def gene_info(gene : str) -> Gene: #-> List:
     r = conn.get_gene_info(gene)
     return http_404() if r == None else Gene(hgnc=r[0], maploc=r[1], descr=r[2], summary=r[3], aliases=r[4], added=r[5])
     
@@ -103,7 +103,7 @@ async def tx_exons(tx_ac : str, alt_ac : str, alt_aln_method: str | None = None)
         #Make a list of Transcript_Exon objects
         tx_exons = []
         for exon in rows:
-            tx_exons.append(Transcript_Exon(hgnc=exon[0], tx_ac=exon[1], alt_ac=exon[2], alt_aln_method=exon[3], alt_strand=exon[4], ord=exon[5], tx_start_i=exon[6], tx_end_i=exon[7], alt_start_i=exon[8], alt_end_i=exon[9], cigar=exon[10], mystery1=exon[11], mystery2=exon[12], tes_exon_set_id=exon[13], aes_exon_set_id=exon[14], tx_exon_id=exon[15], alt_exon_id=exon[16], mystery3=exon[17]))
+            tx_exons.append(Transcript_Exon(hgnc=exon[0], tx_ac=exon[1], alt_ac=exon[2], alt_aln_method=exon[3], alt_strand=exon[4], ord=exon[5], tx_start_i=exon[6], tx_end_i=exon[7], alt_start_i=exon[8], alt_end_i=exon[9], cigar=exon[10], tx_aseq=exon[11], alt_aseq=exon[12], tes_exon_set_id=exon[13], aes_exon_set_id=exon[14], tx_exon_id=exon[15], alt_exon_id=exon[16], exon_aln_id=exon[17]))
         return tx_exons
     except HGVSDataNotAvailableError as e: http_404(e)
 
@@ -142,7 +142,7 @@ async def tx_identity_info(tx_ac : str) -> Transcript: #-> List:
     except HGVSDataNotAvailableError as e: http_404(e)
 
 @app.get("/tx_info/{tx_ac}/{alt_ac}")
-async def tx_info(tx_ac : str, alt_ac : str, alt_aln_method : str | None = None) -> Transcript: #-> List:
+async def tx_info(tx_ac : str, alt_ac : str, alt_aln_method : str | None = None): #-> Transcript: #-> List:
     if alt_aln_method == None: http_422(["alt_aln_method"])
     try:
         r = conn.get_tx_info(tx_ac, alt_ac, alt_aln_method)
@@ -168,7 +168,8 @@ async def similar_transcripts(tx_ac : str) -> List[Similar_Transcript] | None: #
     #Make a list of Transcript objects
     transcripts = []
     for ts in rows:
-        transcripts.append(Similar_Transcript(tx_ac1=ts[0], tx_ac2=ts[1], mystery1=ts[2], m2=ts[3], m3=ts[4], m4=ts[5], m5=ts[6]))
+        transcripts.append(Similar_Transcript(tx_ac1=ts[0], tx_ac2=ts[1], hgnc_eq=ts[2], cds_eq=ts[3], es_fp_eq=ts[4], cds_es_fp_eq=ts[5], cds_exon_lengths_fp_eq=ts[6]))
+    return transcripts
     
 @app.get("/pro_ac_for_tx_ac/{tx_ac}")
 async def pro_ac_for_tx_ac(tx_ac : str) -> str | None:
