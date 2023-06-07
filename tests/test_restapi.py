@@ -53,7 +53,7 @@ def test_gene_info_e():
 def test_gene_info_ne():
     """Nonexisitng gene."""
     url = base + "/gene_info/VH"
-    assert requests.get(url).status_code == 404
+    assert requests.get(url).status_code == 200 #None/null
     
 def test_tx_exons_e():
     """Exisiting seqs."""
@@ -83,7 +83,7 @@ def test_tx_for_gene_e():
 def test_tx_for_gene_ne():
     """Nonexisitng gene."""
     url = base + "/tx_for_gene/VH"
-    assert requests.get(url).status_code == 404
+    assert requests.get(url).status_code == 200 #None/null
     
 def test_tx_for_region_e():
     """Existing region."""

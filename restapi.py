@@ -90,9 +90,9 @@ async def acs_for_protein_seq(seq : str) -> List:
     except RuntimeError as e: http_404(e)
     
 @app.get("/gene_info/{gene}")
-async def gene_info(gene : str) -> Gene: #-> List:
+async def gene_info(gene : str) -> Gene | None: #-> List:
     r = conn.get_gene_info(gene)
-    return http_404() if r == None else Gene(hgnc=r[0], maploc=r[1], descr=r[2], summary=r[3], aliases=r[4], added=r[5])
+    return r if r == None else Gene(hgnc=r[0], maploc=r[1], descr=r[2], summary=r[3], aliases=r[4], added=r[5])
     
 @app.get("/tx_exons/{tx_ac}/{alt_ac}")
 async def tx_exons(tx_ac : str, alt_ac : str, alt_aln_method: str | None = None) -> List[Transcript_Exon]: #-> List[List]:
@@ -110,7 +110,7 @@ async def tx_exons(tx_ac : str, alt_ac : str, alt_aln_method: str | None = None)
 @app.get("/tx_for_gene/{gene}")
 async def tx_for_gene(gene : str) -> List:
     tx = conn.get_tx_for_gene(gene)
-    return http_404() if len(tx) == 0 else tx
+    return tx
 
 @app.get("/tx_for_region/{alt_ac}")
 async def tx_for_region(alt_ac : str, alt_aln_method : str | None = None, start_i : int | None = None, end_i : int | None = None) -> List:
