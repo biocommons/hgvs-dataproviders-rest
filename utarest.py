@@ -9,11 +9,10 @@ which uses:
 
 import restapi
 import requests
-import uvicorn #Will be a different server
+import uvicorn
 from hgvs.dataproviders.interface import Interface
 
 def connect():
-    uvicorn.run("restapi:app", host="127.0.0.1", port=8000, reload=False)
     return UTAREST("http://127.0.0.1:8000")
 
 class UTAREST(Interface):
@@ -83,6 +82,7 @@ class UTAREST(Interface):
 
     def __init__(self, server_url, mode=None, cache=None):
         self.server = server_url
+        self._connect()
         super(UTAREST, self).__init__(mode, cache)
         
     def __str__(self):
@@ -97,16 +97,19 @@ class UTAREST(Interface):
             sf=self.sequence_source(),
         )
         
+    def _connect(self):
+        return
+        
     ############################################################################
     # Queries
     
     def data_version(self):
-        return 
+        return "uta_20180821"
     
     def schema_version(self):
-        return
+        return "1.0"
     
-    def optional_parameters(names: list, params: list) -> str:
+    def optional_parameters(self, names: list, params: list) -> str:
         if not len(names) == len(params): 
             raise Exception("Ensure there is a matching value for each parameter name.")
         retval = ""
@@ -156,7 +159,7 @@ class UTAREST(Interface):
         }
         
         """
-        url = ("{serv}/gene_info/{gene}").format(serve=self.server,gene=gene)
+        url = ("{serv}/gene_info/{gene}").format(serv=self.server,gene=gene)
         return requests.get(url)
     
     def get_tx_exons(self, tx_ac, alt_ac, alt_aln_method):
@@ -208,7 +211,7 @@ class UTAREST(Interface):
         url = (
             "{serv}/tx_exons/{tx_ac}/{alt_ac}?alt_aln_method={alt_aln_method}"
         ).format(
-            serve=self.server,
+            serv=self.server,
             tx_ac=tx_ac,
             alt_ac=alt_ac,
             alt_aln_method=alt_aln_method
@@ -390,7 +393,7 @@ class UTAREST(Interface):
     def get_pro_ac_for_tx_ac(self, tx_ac):
         """Return the (single) associated protein accession for a given transcript
         accession, or None if not found."""
-        url = ("{serv}/pro_ac_for_tx_ac/{tx_ac}").format(serv=self.serve,tx_ac=tx_ac)
+        url = ("{serv}/pro_ac_for_tx_ac/{tx_ac}").format(serv=self.server,tx_ac=tx_ac)
         return requests.get(url)
     
     def get_assembly_map(self, assembly_name):
