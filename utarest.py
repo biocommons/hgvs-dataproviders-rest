@@ -1,5 +1,5 @@
 # UTA Rest
-"""implements a hgvs data provider interface using a REST interface for UTA
+"""implements an hgvs data provider interface using a REST api to UTA
 (https://github.com/biocommons/uta-rest)
 
 which uses:
@@ -7,9 +7,13 @@ which uses:
 
 """
 
-import restapi
+# TODO: Implement
+# data_version()
+# schema_version()
+# sequence_source()
+# _connect()
+
 import requests
-import uvicorn
 from hgvs.dataproviders.interface import Interface
 
 def connect():
@@ -108,6 +112,10 @@ class UTAREST(Interface):
     
     def schema_version(self):
         return "1.0"
+    
+    @staticmethod
+    def sequence_source():
+        return ""
     
     def optional_parameters(self, names: list, params: list) -> str:
         if not len(names) == len(params): 
