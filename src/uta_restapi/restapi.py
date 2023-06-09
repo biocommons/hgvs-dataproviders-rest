@@ -77,6 +77,15 @@ class Alignment_Set(BaseModel):
     alt_ac: str
     alt_aln_method: str
 
+#ping endpoint -> return data, schema, sequence version in json
+@app.get("/ping")
+async def ping() -> dict:
+    d = {}
+    d["data_version"] = conn.data_version()
+    d["schema_version"] = conn.schema_version()
+    d["sequence_source"] = conn.sequence_source()
+    return d
+
 @app.get("/seq/{ac}")
 async def seq(ac : str, start_i: int | None = None, end_i: int | None = None) -> str:
     try:
