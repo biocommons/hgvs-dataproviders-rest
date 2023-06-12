@@ -24,6 +24,18 @@ Simply pass the result of utarest's connect() function as an argument into any [
     ...     replace_reference=True)
 Instead of calling from .uta, you are using .utarest. Both implement the hgvs [data providers interface](https://github.com/biocommons/hgvs/blob/main/src/hgvs/dataproviders/interface.py).
 
+## Using with hgvs (2.0+)
+
+The second version of hgvs allows for selecting a data provider from the options contained in the package utaclients. Uta, uta_rest, and cdot are supported. See [utaclients](https://github.com/ccaitlingo/uta-clients) for more info on each dp.
+
+    >>> import hgvs
+    >>> import utaclients
+    >>> hdp = utaclients.uta_rest.connect()
+
+    >>> am = hgvs.assemblymapper.AssemblyMapper(hdp, 
+    ...     assembly_name='GRCh37', alt_aln_method='splign',
+    ...     replace_reference=True)
+
 ## Developer Installation
 
     $ python3 -m venv venv
