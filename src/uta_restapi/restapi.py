@@ -13,12 +13,6 @@ def http_404(hgvs_exception = None):
             detail="Not found" if hgvs_exception == None else str(hgvs_exception)
     )
     
-def http_422(fields : List[str]):
-    raise HTTPException(
-            status_code=422,
-            detail="Please provide query parameters for the following fields: " + str(fields)
-        )
-    
 def check_valid_ac(ac):
     try:
         conn.get_seq(ac, 0, 1)
@@ -104,8 +98,7 @@ async def gene_info(gene : str) -> Gene | None: #-> List:
     return r if r == None else Gene(hgnc=r[0], maploc=r[1], descr=r[2], summary=r[3], aliases=r[4], added=r[5])
     
 @app.get("/tx_exons/{tx_ac}/{alt_ac}")
-async def tx_exons(tx_ac : str, alt_ac : str, alt_aln_method: str | None = None) -> List[Transcript_Exon]: #-> List[List]:
-    if alt_aln_method == None: http_422(["alt_aln_method"])
+async def tx_exons(tx_ac : str, alt_ac : str, alt_aln_method: str) -> List[Transcript_Exon]: #-> List[List]:
     try:
         rows = conn.get_tx_exons(tx_ac, alt_ac, alt_aln_method)
         if rows == None: return rows
@@ -122,25 +115,11 @@ async def tx_for_gene(gene : str) -> List:
     return tx
 
 @app.get("/tx_for_region/{alt_ac}")
-async def tx_for_region(alt_ac : str, alt_aln_method : str | None = None, start_i : int | None = None, end_i : int | None = None) -> List:
-    #Check for blank fields
-    params = ["alt_aln_method", "start_i", "end_i"]
-    blank_fields = []
-    for param in params: 
-        if locals()[param] == None: blank_fields.append(param)
-    if not len(blank_fields) == 0: http_422(blank_fields)
-    #Call uta function
+async def tx_for_region(alt_ac : str, alt_aln_method : str, start_i : int, end_i : int) -> List:
     return conn.get_tx_for_region(alt_ac, alt_aln_method, start_i, end_i)
 
 @app.get("/alignments_for_region/{alt_ac}", status_code=200)
-async def alignments_for_region(alt_ac, start_i: int | None = None, end_i: int | None = None, alt_aln_method : str | None = None) -> List:
-    #Check fields
-    params = ["start_i", "end_i"]
-    blank_fields = []
-    for param in params: 
-        if locals()[param] == None: blank_fields.append(param)
-    if not len(blank_fields) == 0: http_422(blank_fields)
-    #Call uta function
+async def alignments_for_region(alt_ac, start_i: int, end_i: int, alt_aln_method : str | None = None) -> List:
     return conn.get_alignments_for_region(alt_ac, start_i, end_i, alt_aln_method)
 
 @app.get("/tx_identity_info/{tx_ac}")
@@ -151,8 +130,7 @@ async def tx_identity_info(tx_ac : str) -> Transcript: #-> List:
     except HGVSDataNotAvailableError as e: http_404(e)
 
 @app.get("/tx_info/{tx_ac}/{alt_ac}")
-async def tx_info(tx_ac : str, alt_ac : str, alt_aln_method : str | None = None): #-> Transcript: #-> List:
-    if alt_aln_method == None: http_422(["alt_aln_method"])
+async def tx_info(tx_ac : str, alt_ac : str, alt_aln_method : str): #-> Transcript: #-> List:
     try:
         r = conn.get_tx_info(tx_ac, alt_ac, alt_aln_method)
         return Transcript(hgnc=r[0], cds_start_i=r[1], cds_end_i=r[2], tx_ac=r[3], alt_ac=r[4], alt_aln_method=r[5])
