@@ -6,6 +6,7 @@ import pytest
 import os
 import vcr as vcrpy
 
+os.environ['UTAREST_URL'] = 'http://127.0.0.1:8000'
 test_dir = os.path.dirname(__file__)
 test_data_dir = os.path.join(test_dir, "data", "cassettes")
 
