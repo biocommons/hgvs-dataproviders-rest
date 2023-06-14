@@ -67,9 +67,6 @@ jobs:
 
     - name: Test with pytest
       run: |
-        export PYTHONPATH=src/biocommons/uta_rest
-        uvicorn restapi:app --reload </dev/null &>/dev/null &
-        PYTHONPATH=.  
         make test
 
   # deploy:
