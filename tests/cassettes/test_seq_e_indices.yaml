@@ -33,20 +33,20 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Wed, 14 Jun 2023 21:01:01 GMT
+      - Wed, 14 Jun 2023 23:25:55 GMT
       Keep-Alive:
       - timeout=4, max=40
       NCBI-PHID:
-      - 322C31B82DC2C875000040483D4919B4.1.1.m_5
+      - 322C31B82DC2C875000065A96EE8196E.1.1.m_5
       NCBI-SID:
-      - EF9C9E76C3A2381D_657FSID
+      - 259A125038F374CF_802DSID
       Referrer-Policy:
       - origin-when-cross-origin
       Server:
       - Finatra
       Set-Cookie:
-      - ncbi_sid=EF9C9E76C3A2381D_657FSID; domain=.nih.gov; path=/; expires=Fri, 14
-        Jun 2024 21:01:01 GMT
+      - ncbi_sid=259A125038F374CF_802DSID; domain=.nih.gov; path=/; expires=Fri, 14
+        Jun 2024 23:25:55 GMT
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains; preload
       Transfer-Encoding:
@@ -76,7 +76,35 @@ interactions:
       User-Agent:
       - python-requests/2.31.0
     method: GET
-    uri: http://localhost:8000/seq/NC_000007.13?start_i=10000&end_i=10050
+    uri: http://127.0.0.1:8000/ping
+  response:
+    body:
+      string: '{"data_version":"uta_20180821","schema_version":"1.1","sequence_source":"seqfetcher"}'
+    headers:
+      content-length:
+      - '85'
+      content-type:
+      - application/json
+      date:
+      - Wed, 14 Jun 2023 23:25:55 GMT
+      server:
+      - uvicorn
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: http://127.0.0.1:8000/seq/NC_000007.13?start_i=10000&end_i=10050
   response:
     body:
       string: '"CTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCT"'
@@ -86,7 +114,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 14 Jun 2023 21:01:00 GMT
+      - Wed, 14 Jun 2023 23:25:55 GMT
       server:
       - uvicorn
     status:

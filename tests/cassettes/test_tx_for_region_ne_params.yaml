@@ -21,35 +21,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 14 Jun 2023 23:26:10 GMT
-      server:
-      - uvicorn
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.31.0
-    method: GET
-    uri: http://127.0.0.1:8000/tx_mapping_options/fake
-  response:
-    body:
-      string: '[]'
-    headers:
-      content-length:
-      - '2'
-      content-type:
-      - application/json
-      date:
-      - Wed, 14 Jun 2023 23:26:10 GMT
+      - Wed, 14 Jun 2023 23:26:03 GMT
       server:
       - uvicorn
     status:

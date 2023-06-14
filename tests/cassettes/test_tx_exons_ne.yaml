@@ -11,7 +11,35 @@ interactions:
       User-Agent:
       - python-requests/2.31.0
     method: GET
-    uri: http://localhost:8000/tx_exons/NM_199425.2/fake?alt_aln_method=splign
+    uri: http://127.0.0.1:8000/ping
+  response:
+    body:
+      string: '{"data_version":"uta_20180821","schema_version":"1.1","sequence_source":"seqfetcher"}'
+    headers:
+      content-length:
+      - '85'
+      content-type:
+      - application/json
+      date:
+      - Wed, 14 Jun 2023 23:25:59 GMT
+      server:
+      - uvicorn
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: http://127.0.0.1:8000/tx_exons/NM_199425.2/fake?alt_aln_method=splign
   response:
     body:
       string: '{"detail":"No tx_exons for (tx_ac=NM_199425.2,alt_ac=fake,alt_aln_method=splign)"}'
@@ -21,7 +49,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 14 Jun 2023 21:01:02 GMT
+      - Wed, 14 Jun 2023 23:25:59 GMT
       server:
       - uvicorn
     status:
