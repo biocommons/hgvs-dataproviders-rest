@@ -1,0 +1,30 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: http://localhost:8000/similar_transcripts/NM_000051.3
+  response:
+    body:
+      string: '[{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000278616","hgnc_eq":true,"cds_eq":false,"es_fp_eq":false,"cds_es_fp_eq":false,"cds_exon_lengths_fp_eq":true},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000419286","hgnc_eq":true,"cds_eq":null,"es_fp_eq":false,"cds_es_fp_eq":null,"cds_exon_lengths_fp_eq":null},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000452508","hgnc_eq":true,"cds_eq":false,"es_fp_eq":false,"cds_es_fp_eq":false,"cds_exon_lengths_fp_eq":true},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000524792","hgnc_eq":true,"cds_eq":null,"es_fp_eq":false,"cds_es_fp_eq":null,"cds_exon_lengths_fp_eq":null},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000525012","hgnc_eq":true,"cds_eq":null,"es_fp_eq":false,"cds_es_fp_eq":null,"cds_exon_lengths_fp_eq":null},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000525056","hgnc_eq":true,"cds_eq":null,"es_fp_eq":false,"cds_es_fp_eq":null,"cds_exon_lengths_fp_eq":null},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000525178","hgnc_eq":true,"cds_eq":null,"es_fp_eq":false,"cds_es_fp_eq":null,"cds_exon_lengths_fp_eq":null},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000525537","hgnc_eq":true,"cds_eq":null,"es_fp_eq":false,"cds_es_fp_eq":null,"cds_exon_lengths_fp_eq":null},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000526567","hgnc_eq":true,"cds_eq":null,"es_fp_eq":false,"cds_es_fp_eq":null,"cds_exon_lengths_fp_eq":null},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000527181","hgnc_eq":true,"cds_eq":null,"es_fp_eq":false,"cds_es_fp_eq":null,"cds_exon_lengths_fp_eq":null},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000527389","hgnc_eq":true,"cds_eq":null,"es_fp_eq":false,"cds_es_fp_eq":null,"cds_exon_lengths_fp_eq":null},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000527805","hgnc_eq":true,"cds_eq":false,"es_fp_eq":false,"cds_es_fp_eq":false,"cds_exon_lengths_fp_eq":false},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000527891","hgnc_eq":true,"cds_eq":false,"es_fp_eq":false,"cds_es_fp_eq":false,"cds_exon_lengths_fp_eq":false},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000529588","hgnc_eq":true,"cds_eq":null,"es_fp_eq":false,"cds_es_fp_eq":null,"cds_exon_lengths_fp_eq":null},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000530958","hgnc_eq":true,"cds_eq":null,"es_fp_eq":false,"cds_es_fp_eq":null,"cds_exon_lengths_fp_eq":null},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000531525","hgnc_eq":true,"cds_eq":false,"es_fp_eq":false,"cds_es_fp_eq":false,"cds_exon_lengths_fp_eq":false},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000531957","hgnc_eq":true,"cds_eq":null,"es_fp_eq":false,"cds_es_fp_eq":null,"cds_exon_lengths_fp_eq":null},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000532765","hgnc_eq":true,"cds_eq":null,"es_fp_eq":false,"cds_es_fp_eq":null,"cds_exon_lengths_fp_eq":null},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000532931","hgnc_eq":true,"cds_eq":false,"es_fp_eq":false,"cds_es_fp_eq":false,"cds_exon_lengths_fp_eq":false},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000533526","hgnc_eq":true,"cds_eq":null,"es_fp_eq":false,"cds_es_fp_eq":null,"cds_exon_lengths_fp_eq":null},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000533690","hgnc_eq":true,"cds_eq":null,"es_fp_eq":false,"cds_es_fp_eq":null,"cds_exon_lengths_fp_eq":null},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000533733","hgnc_eq":true,"cds_eq":null,"es_fp_eq":false,"cds_es_fp_eq":null,"cds_exon_lengths_fp_eq":null},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000533979","hgnc_eq":true,"cds_eq":null,"es_fp_eq":false,"cds_es_fp_eq":null,"cds_exon_lengths_fp_eq":null},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000534625","hgnc_eq":true,"cds_eq":null,"es_fp_eq":false,"cds_es_fp_eq":null,"cds_exon_lengths_fp_eq":null},{"tx_ac1":"NM_000051.3","tx_ac2":"ENST00000601453","hgnc_eq":true,"cds_eq":false,"es_fp_eq":false,"cds_es_fp_eq":false,"cds_exon_lengths_fp_eq":false},{"tx_ac1":"NM_000051.3","tx_ac2":"NM_001351834.1","hgnc_eq":true,"cds_eq":true,"es_fp_eq":false,"cds_es_fp_eq":false,"cds_exon_lengths_fp_eq":true},{"tx_ac1":"NM_000051.3","tx_ac2":"NM_001351835.1","hgnc_eq":true,"cds_eq":false,"es_fp_eq":false,"cds_es_fp_eq":false,"cds_exon_lengths_fp_eq":false},{"tx_ac1":"NM_000051.3","tx_ac2":"NM_001351836.1","hgnc_eq":true,"cds_eq":false,"es_fp_eq":false,"cds_es_fp_eq":false,"cds_exon_lengths_fp_eq":false}]'
+    headers:
+      content-length:
+      - '4168'
+      content-type:
+      - application/json
+      date:
+      - Wed, 14 Jun 2023 21:01:04 GMT
+      server:
+      - uvicorn
+    status:
+      code: 200
+      message: OK
+version: 1

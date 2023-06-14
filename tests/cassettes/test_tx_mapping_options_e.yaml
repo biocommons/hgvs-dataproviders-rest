@@ -1,0 +1,30 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: http://localhost:8000/tx_mapping_options/NM_000051.3
+  response:
+    body:
+      string: '[{"tx_ac":"NM_000051.3","alt_ac":"AC_000143.1","alt_aln_method":"splign"},{"tx_ac":"NM_000051.3","alt_ac":"NC_000011.10","alt_aln_method":"splign"},{"tx_ac":"NM_000051.3","alt_ac":"NC_000011.9","alt_aln_method":"blat"},{"tx_ac":"NM_000051.3","alt_ac":"NC_000011.9","alt_aln_method":"splign"},{"tx_ac":"NM_000051.3","alt_ac":"NC_018922.2","alt_aln_method":"splign"},{"tx_ac":"NM_000051.3","alt_ac":"NG_009830.1","alt_aln_method":"splign"}]'
+    headers:
+      content-length:
+      - '438'
+      content-type:
+      - application/json
+      date:
+      - Wed, 14 Jun 2023 21:01:04 GMT
+      server:
+      - uvicorn
+    status:
+      code: 200
+      message: OK
+version: 1

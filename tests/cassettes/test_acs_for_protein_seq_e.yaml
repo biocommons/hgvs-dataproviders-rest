@@ -1,0 +1,30 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: http://localhost:8000/acs_for_protein_seq/MRAKWRKKRMRRLKRKRRKMRQRSK
+  response:
+    body:
+      string: '["NP_001030344.1","NP_066927.1","MD5_cfed2207f5a85c361e441ab4088ea98f"]'
+    headers:
+      content-length:
+      - '71'
+      content-type:
+      - application/json
+      date:
+      - Wed, 14 Jun 2023 21:01:00 GMT
+      server:
+      - uvicorn
+    status:
+      code: 200
+      message: OK
+version: 1

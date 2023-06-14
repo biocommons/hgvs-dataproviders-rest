@@ -1,0 +1,30 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: http://localhost:8000/acs_for_protein_seq/123
+  response:
+    body:
+      string: '{"detail":"Normalized sequence contains non-alphabetic characters"}'
+    headers:
+      content-length:
+      - '67'
+      content-type:
+      - application/json
+      date:
+      - Wed, 14 Jun 2023 21:01:00 GMT
+      server:
+      - uvicorn
+    status:
+      code: 404
+      message: Not Found
+version: 1

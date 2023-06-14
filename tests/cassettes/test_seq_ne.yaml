@@ -1,0 +1,31 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: http://localhost:8000/seq/fake
+  response:
+    body:
+      string: '{"detail":"Failed to fetch fake from bioutils.seqfetcher (network fetching)
+        (No sequence fetcher for fake)"}'
+    headers:
+      content-length:
+      - '108'
+      content-type:
+      - application/json
+      date:
+      - Wed, 14 Jun 2023 21:00:59 GMT
+      server:
+      - uvicorn
+    status:
+      code: 404
+      message: Not Found
+version: 1
