@@ -129,7 +129,7 @@ async def tx_identity_info(tx_ac : str):
         return Transcript(tx_ac=r[0], alt_ac=r[1], alt_aln_method=r[2], cds_start_i=r[3], cds_end_i=r[4], lengths=r[5], hgnc=r[6])
     except HGVSDataNotAvailableError as e: http_404(e)
 
-@app.get("/tx_info/{tx_ac}/{alt_ac}", response_model=Transcript)
+@app.get("/tx_info/{tx_ac}/{alt_ac}", response_model=Transcript, response_model_exclude_unset=True)
 async def tx_info(tx_ac : str, alt_ac : str, alt_aln_method : str):
     try:
         r = conn.get_tx_info(tx_ac, alt_ac, alt_aln_method)
