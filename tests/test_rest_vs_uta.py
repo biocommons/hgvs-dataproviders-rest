@@ -6,7 +6,7 @@ import pytest
 import os
 import vcr as vcrpy
 
-os.environ['UTAREST_URL'] = 'http://127.0.0.1:8000'
+os.environ['UTAREST_URL'] = 'http://127.0.0.1:8000' # Used in utarest.connect()
 test_dir = os.path.dirname(__file__)
 test_data_dir = os.path.join(test_dir, "data", "cassettes")
 
@@ -313,12 +313,12 @@ def test_data_version():
     
 @pytest.mark.vcr
 def test_schema_version():
-    u = conn_uta.data_version()
-    r = conn_utarest.data_version()
+    u = conn_uta.schema_version()
+    r = conn_utarest.schema_version()
     assert u == r
     
 @pytest.mark.vcr
 def test_sequence_source():
-    u = conn_uta.data_version()
-    r = conn_utarest.data_version()
+    u = conn_uta.sequence_source()
+    r = conn_utarest.sequence_source()
     assert u == r
