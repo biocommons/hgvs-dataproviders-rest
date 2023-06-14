@@ -7,86 +7,21 @@ which uses:
 
 """
 
-# TODO: Implement
-# data_version()
-# schema_version()
-# sequence_source()
-# _connect()
-
 import requests
+import os
 from hgvs.dataproviders.interface import Interface
 
 def connect():
-    return UTAREST("http://127.0.0.1:8000")
+    # Eventually replace this fake default url :)
+    url = os.environ.get("UTAREST_URL", "https://api.biocommons.org/utarest/0")
+    return UTAREST(url)
 
 class UTAREST(Interface):
     required_version = "1.0"
-    
-    _queries = {
-        "acs_for_protein_md5": """
-            select ac
-            from seq_anno
-            where seq_id=?
-            """,
-        "gene_info": """
-            select *
-            from gene
-            where hgnc=?
-            """,
-        # TODO: see uta.py
-        "tx_exons": """
-            select *
-            from tx_exon_aln_v
-            where tx_ac=? and alt_ac=? and alt_aln_method=?
-            order by alt_start_i
-            """,
-        "tx_for_gene": """
-            select hgnc, cds_start_i, cds_end_i, tx_ac, alt_ac, alt_aln_method
-            from transcript T
-            join exon_set ES on T.ac=ES.tx_ac where alt_aln_method != 'transcript' and hgnc=?
-            """,
-        "alignments_for_region": """
-            select tx_ac,alt_ac,alt_strand,alt_aln_method,min(start_i) as start_i,max(end_i) as end_i
-            from exon_set ES
-            join exon E on ES.exon_set_id=E.exon_set_id 
-            where alt_ac=?
-            group by tx_ac,alt_ac,alt_strand,alt_aln_method
-            having min(start_i) < ? and ? <= max(end_i)
-            """,
-        "tx_identity_info": """
-            select distinct(tx_ac), alt_ac, alt_aln_method, cds_start_i, cds_end_i, lengths, hgnc
-            from tx_def_summary_v
-            where tx_ac=?
-            """,
-        "tx_info": """
-            select hgnc, cds_start_i, cds_end_i, tx_ac, alt_ac, alt_aln_method
-            from transcript T
-            join exon_set ES on T.ac=ES.tx_ac
-            where tx_ac=? and alt_ac=? and alt_aln_method=?
-            """,
-        "tx_mapping_options": """
-            select distinct tx_ac,alt_ac,alt_aln_method
-            from tx_exon_aln_v where tx_ac=? and exon_aln_id is not NULL
-            """,
-        "tx_seq": """
-            select seq
-            from seq S
-            join seq_anno SA on S.seq_id=SA.seq_id
-            where ac=?
-            """,
-        "tx_similar": """
-            select *
-            from tx_similarity_v
-            where tx_ac1 = ?
-            """,
-        "tx_to_pro": """
-            select * from associated_accessions where tx_ac = ? order by pro_ac desc
-            """,
-    }
 
     def __init__(self, server_url, mode=None, cache=None):
         self.server = server_url
-        self._connect()
+        self.pingresponse = requests.get(server_url + "/ping").json()
         super(UTAREST, self).__init__(mode, cache)
         
     def __str__(self):
@@ -101,38 +36,35 @@ class UTAREST(Interface):
             sf=self.sequence_source(),
         )
         
-    def _connect(self):
-        return
-        
     ############################################################################
     # Queries
     
     def data_version(self):
-        return "uta_20180821"
+        return self.pingresponse["data_version"]
     
     def schema_version(self):
-        return "1.0"
+        return self.pingresponse["schema_version"]
     
-    @staticmethod
-    def sequence_source():
-        return ""
+    def sequence_source(self):
+        return self.pingresponse["data_version"]
     
     def optional_parameters(self, names: list, params: list) -> str:
+        """
+        Returns a string representation of query parameters that can be appended to a url
+        Example: optional_parameters(["start_i", "end_i", "align_method"], [0, 1, "splign"]))
+        Returns: ?start_i=0&end_i=1&align_method=splign
+        """
         if not len(names) == len(params): 
             raise Exception("Ensure there is a matching value for each parameter name.")
-        retval = ""
-        no_params = True
+        retval = "?"
+        params_added = False
         for (param, name) in zip(params, names):
             if not param == None:
-                if no_params:
-                    retval += "?"
-                else:
+                if params_added:
                     retval += "&"
                 retval += ("{name}={param}").format(name=name,param=param)
-                no_params = False
+                params_added = True
         return retval
-    
-    #print(optional_parameters(["start_i", "end_i", "align_method"], [0, 1, "splign"]))
     
     def get_seq(self, ac, start_i=None, end_i=None):
         url = ("{serv}/seq/{ac}").format(serv=self.server,ac=ac)

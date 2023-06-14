@@ -13,12 +13,6 @@ def http_404(hgvs_exception = None):
             detail="Not found" if hgvs_exception == None else str(hgvs_exception)
     )
     
-def http_422(fields : List[str]):
-    raise HTTPException(
-            status_code=422,
-            detail="Please provide query parameters for the following fields: " + str(fields)
-        )
-    
 def check_valid_ac(ac):
     try:
         conn.get_seq(ac, 0, 1)
@@ -77,6 +71,15 @@ class Alignment_Set(BaseModel):
     alt_ac: str
     alt_aln_method: str
 
+#ping endpoint -> return data, schema, sequence version in json
+@app.get("/ping")
+async def ping() -> dict:
+    d = {}
+    d["data_version"] = conn.data_version()
+    d["schema_version"] = conn.schema_version()
+    d["sequence_source"] = conn.sequence_source()
+    return d
+
 @app.get("/seq/{ac}")
 async def seq(ac : str, start_i: int | None = None, end_i: int | None = None) -> str:
     try:
@@ -89,14 +92,13 @@ async def acs_for_protein_seq(seq : str) -> List:
         return conn.get_acs_for_protein_seq(seq)
     except RuntimeError as e: http_404(e)
     
-@app.get("/gene_info/{gene}")
-async def gene_info(gene : str) -> Gene | None: #-> List:
+@app.get("/gene_info/{gene}", response_model = Gene | None)
+async def gene_info(gene : str):
     r = conn.get_gene_info(gene)
     return r if r == None else Gene(hgnc=r[0], maploc=r[1], descr=r[2], summary=r[3], aliases=r[4], added=r[5])
     
-@app.get("/tx_exons/{tx_ac}/{alt_ac}")
-async def tx_exons(tx_ac : str, alt_ac : str, alt_aln_method: str | None = None) -> List[Transcript_Exon]: #-> List[List]:
-    if alt_aln_method == None: http_422(["alt_aln_method"])
+@app.get("/tx_exons/{tx_ac}/{alt_ac}", response_model = List[Transcript_Exon])
+async def tx_exons(tx_ac : str, alt_ac : str, alt_aln_method: str):
     try:
         rows = conn.get_tx_exons(tx_ac, alt_ac, alt_aln_method)
         if rows == None: return rows
@@ -113,37 +115,22 @@ async def tx_for_gene(gene : str) -> List:
     return tx
 
 @app.get("/tx_for_region/{alt_ac}")
-async def tx_for_region(alt_ac : str, alt_aln_method : str | None = None, start_i : int | None = None, end_i : int | None = None) -> List:
-    #Check for blank fields
-    params = ["alt_aln_method", "start_i", "end_i"]
-    blank_fields = []
-    for param in params: 
-        if locals()[param] == None: blank_fields.append(param)
-    if not len(blank_fields) == 0: http_422(blank_fields)
-    #Call uta function
+async def tx_for_region(alt_ac : str, alt_aln_method : str, start_i : int, end_i : int) -> List:
     return conn.get_tx_for_region(alt_ac, alt_aln_method, start_i, end_i)
 
 @app.get("/alignments_for_region/{alt_ac}", status_code=200)
-async def alignments_for_region(alt_ac, start_i: int | None = None, end_i: int | None = None, alt_aln_method : str | None = None) -> List:
-    #Check fields
-    params = ["start_i", "end_i"]
-    blank_fields = []
-    for param in params: 
-        if locals()[param] == None: blank_fields.append(param)
-    if not len(blank_fields) == 0: http_422(blank_fields)
-    #Call uta function
+async def alignments_for_region(alt_ac, start_i: int, end_i: int, alt_aln_method : str | None = None) -> List:
     return conn.get_alignments_for_region(alt_ac, start_i, end_i, alt_aln_method)
 
-@app.get("/tx_identity_info/{tx_ac}")
-async def tx_identity_info(tx_ac : str) -> Transcript: #-> List:
+@app.get("/tx_identity_info/{tx_ac}", response_model=Transcript)
+async def tx_identity_info(tx_ac : str):
     try:
         r = conn.get_tx_identity_info(tx_ac)
         return Transcript(tx_ac=r[0], alt_ac=r[1], alt_aln_method=r[2], cds_start_i=r[3], cds_end_i=r[4], lengths=r[5], hgnc=r[6])
     except HGVSDataNotAvailableError as e: http_404(e)
 
-@app.get("/tx_info/{tx_ac}/{alt_ac}")
-async def tx_info(tx_ac : str, alt_ac : str, alt_aln_method : str | None = None): #-> Transcript: #-> List:
-    if alt_aln_method == None: http_422(["alt_aln_method"])
+@app.get("/tx_info/{tx_ac}/{alt_ac}", response_model=Transcript)
+async def tx_info(tx_ac : str, alt_ac : str, alt_aln_method : str):
     try:
         r = conn.get_tx_info(tx_ac, alt_ac, alt_aln_method)
         return Transcript(hgnc=r[0], cds_start_i=r[1], cds_end_i=r[2], tx_ac=r[3], alt_ac=r[4], alt_aln_method=r[5])
@@ -151,8 +138,8 @@ async def tx_info(tx_ac : str, alt_ac : str, alt_aln_method : str | None = None)
     except HGVSDataNotAvailableError as e: http_404(e)
     except HGVSError as e: http_404(e)
 
-@app.get("/tx_mapping_options/{tx_ac}")
-async def tx_mapping_options(tx_ac : str) -> List[Alignment_Set]: #-> List[List]:
+@app.get("/tx_mapping_options/{tx_ac}", response_model=List[Alignment_Set])
+async def tx_mapping_options(tx_ac : str):
     rows = conn.get_tx_mapping_options(tx_ac)
     if rows == None: return rows
     #Make a list of Alignment_Set objects
@@ -161,8 +148,8 @@ async def tx_mapping_options(tx_ac : str) -> List[Alignment_Set]: #-> List[List]
         alignments.append(Alignment_Set(tx_ac=align[0], alt_ac=align[1], alt_aln_method=align[2]))
     return alignments
     
-@app.get("/similar_transcripts/{tx_ac}")
-async def similar_transcripts(tx_ac : str) -> List[Similar_Transcript] | None: #-> List[List]:
+@app.get("/similar_transcripts/{tx_ac}", response_model=List[Similar_Transcript])
+async def similar_transcripts(tx_ac : str):
     rows = conn.get_similar_transcripts(tx_ac)
     if rows == None: return rows
     #Make a list of Transcript objects

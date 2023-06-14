@@ -1,4 +1,4 @@
-import utarest
+import src.uta_restapi.utarest as utarest
 import datetime
 import hgvs.dataproviders.uta as uta
 import pytest
@@ -7,6 +7,8 @@ conn_uta = uta.connect()
 conn_utarest = utarest.connect()
 
 def just_values(dictionaries: list[dict]) -> list[list]:
+    """Like the opposite of dict(), when dict() can't be used.
+    (i.e. to compare just the values of a dictionary against a list of values)"""
     newlist = []
     for dictionary in dictionaries:
         newlist.append(list(dictionary.values()))
@@ -259,3 +261,17 @@ def test_assembly_map_ne():
     with pytest.raises(Exception):
         conn_uta.get_assembly_map("GROUCH")
      
+def test_data_version():
+    u = conn_uta.data_version()
+    r = conn_utarest.data_version()
+    assert u == r
+    
+def test_schema_version():
+    u = conn_uta.data_version()
+    r = conn_utarest.data_version()
+    assert u == r
+    
+def test_sequence_source():
+    u = conn_uta.data_version()
+    r = conn_utarest.data_version()
+    assert u == r
