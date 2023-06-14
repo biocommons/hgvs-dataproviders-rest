@@ -77,7 +77,7 @@ async def ping() -> dict:
     d = {}
     d["data_version"] = conn.data_version()
     d["schema_version"] = conn.schema_version()
-    d["sequence_source"] = conn.sequence_source()
+    d["sequence_source"] = UTABase.sequence_source()
     return d
 
 @app.get("/seq/{ac}")
