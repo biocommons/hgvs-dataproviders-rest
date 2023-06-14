@@ -2,7 +2,7 @@
 
 Rest interface for [UTA](https://github.com/biocommons/uta).
 
-The uta database is used by hgvs to normalize, validate, and map sequence variants, among other functionalities such as parsing and formatting that are included in the [hgvs](https://github.com/biocommons/hgvs) library. In order for hgvs to access transcript info needed for mapping, it uses the uta data provider to fetch transcripts via direct PostgreSQL access.
+The uta database is used by [hgvs](https://github.com/biocommons/hgvs) to perform many of its sequence manipulation functions. The hgvs library includes tools to normalize, validate, and map sequence variants (among other functionalities). In order for hgvs to access transcript info needed for such work, it uses the uta data provider to fetch transcripts via direct PostgreSQL access.
 
 This package includes a REST api (restapi.py) for uta that stands between hgvs and PostgreSQL, along with a data provider for hgvs (utarest.py) that acts as its client.
 
