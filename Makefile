@@ -75,7 +75,7 @@ cqa:
 #=> test-docs: test example code in docs
 .PHONY: test test-code test-docs
 test:
-	pytest tests/test_rest_vs_uta.py
+	pytest tests
 test-code:
 	pytest src
 test-docs:
