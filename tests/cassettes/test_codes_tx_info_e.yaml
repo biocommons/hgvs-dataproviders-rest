@@ -1,0 +1,30 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: http://127.0.0.1:8000/tx_info/NM_199425.2/NC_000020.10?alt_aln_method=splign
+  response:
+    body:
+      string: '{"hgnc":"VSX1","cds_start_i":283,"cds_end_i":1003,"tx_ac":"NM_199425.2","alt_ac":"NC_000020.10","alt_aln_method":"splign"}'
+    headers:
+      content-length:
+      - '122'
+      content-type:
+      - application/json
+      date:
+      - Thu, 15 Jun 2023 18:06:01 GMT
+      server:
+      - uvicorn
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -1,0 +1,31 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: http://127.0.0.1:8000/gene_info/VHL
+  response:
+    body:
+      string: '{"hgnc":"VHL","maploc":"3p25.3","descr":"von Hippel-Lindau tumor suppressor","summary":"von
+        Hippel-Lindau tumor suppressor","aliases":"{HRCA1,RCA1,VHL1,pVHL}","added":"2014-02-10T22:59:21.153414"}'
+    headers:
+      content-length:
+      - '196'
+      content-type:
+      - application/json
+      date:
+      - Thu, 15 Jun 2023 18:06:01 GMT
+      server:
+      - uvicorn
+    status:
+      code: 200
+      message: OK
+version: 1

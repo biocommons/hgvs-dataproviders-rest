@@ -1,0 +1,30 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: http://127.0.0.1:8000/assembl/gene_info/BRCA1y_map/GROUCH
+  response:
+    body:
+      string: '{"detail":"Not Found"}'
+    headers:
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Thu, 15 Jun 2023 18:06:01 GMT
+      server:
+      - uvicorn
+    status:
+      code: 404
+      message: Not Found
+version: 1
