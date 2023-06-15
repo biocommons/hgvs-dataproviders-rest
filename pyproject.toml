@@ -1,0 +1,91 @@
+[project]
+name = "biocommons.uta_rest"
+authors = [
+  { name="Reece Hart", email="reece@myome.com" },
+  { name="Caitlin Gong", email="caitlin.gong@myome.com" }
+]
+description = "REST Interface for UTA"
+readme = "README.md"
+#license = { file=LISCENSE }
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dynamic = ["version"]
+
+[project.urls]
+"Homepage" = "https://github.com/biocommons/uta-rest"
+"Bug Tracker" = "https://github.com/biocommons/uta-rest/issues"
+
+
+[build-system]
+requires = [
+	 "setuptools >= 65.3",
+   	 "setuptools_scm[toml] ~= 7.0"
+	 ]
+build-backend = "setuptools.build_meta"
+
+
+[tool.setuptools_scm]
+
+
+# https://docs.pytest.org/en/6.2.x/customize.html#pyproject-toml
+[tool.pytest.ini_options]
+addopts = "-s -v -x --strict-markers -m 'not extra' --doctest-modules"
+doctest_optionflags = [
+    "ALLOW_BYTES",
+    "ALLOW_UNICODE",
+    "ELLIPSIS",
+    "IGNORE_EXCEPTION_DETAIL",
+    "NORMALIZE_WHITESPACE",
+]
+markers = [
+	"network: tests that require network connectivity",
+	"slow: slow tests that should be run infrequently",
+]
+
+
+[tool.coverage.run]
+branch = true
+source = ["biocommons.uta-rest"]
+omit = ["*_test.py", "*/tests/*"]
+
+
+[tool.coverage.report]
+show_missing = true
+exclude_lines = [
+    # Have to re-enable the standard pragma
+    "pragma: no cover",
+
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    "if self.debug",
+
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+
+    # Don't complain if non-runnable code isn't run:
+    "if __name__ == .__main__.:",
+]
+
+[tool.black]
+line-length = 120
+
+
+# [tool.flake8]
+# flake8 does not support configuration in pyproject.toml
+# https://github.com/PyCQA/flake8/issues/234#issuecomment-812800832
+# The config in setup.cfg
+
+[tool.pylint.'MESSAGES CONTROL']
+disable = "R0913"
+
+
+[tool.pylint.format]
+max-line-length = "120"

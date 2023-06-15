@@ -1,47 +1,77 @@
-# uta-rest
+# biocommons.uta-rest Test Package
 
-Rest interface for [UTA](https://github.com/biocommons/uta).
+This repo provides a template for biocommons Python packages.  Here's how to use it:
 
-The uta database is used by [hgvs](https://github.com/biocommons/hgvs) to perform many of its sequence manipulation functions. The hgvs library includes tools to normalize, validate, and map sequence variants (among other functionalities). In order for hgvs to access transcript info needed for such work, it uses the uta data provider to fetch transcripts via direct PostgreSQL access.
+1. Click the [Use this template](https://github.com/biocommons/uta-rest/generate)
+   button. Name the new repo like "biocommons.something".
+1. Clone your repo locally.
+1. In the repo, type `make rename`. The new name will be chosen based on the repo name.
+1. Remove this header.
+1. Commit and push.
 
-This package includes a REST api (restapi.py) for uta that stands between hgvs and PostgreSQL, along with a data provider for hgvs (utarest.py) that acts as its client.
+## Installation
 
- ## Installing the UTA Rest API Locally
+To install from pypi: ```pip install biocommons.uta-rest```
 
-Install docker.
+## Developer Setup
 
-    $ docker pull biocommons/uta-rest:uta-rest
-    $ docker volume create --name=uta-rest
-    $ docker run -p 8000:8000 biocommons/uta-rest:uta-rest
+Setup like this:
 
-## Using with hgvs
+    make devready
+    source venv/bin/activate
 
-Simply pass the result of utarest's connect() function as an argument into any [hgvs](https://github.com/biocommons/hgvs) tool, e.g. Assembly Mapper.
+Code reformatting:
+
+    make reformat
+
+Test:
+
+    make test   # for current environment
+    make tox    # for Python 3.9 and Python 3.10
+
+Build:
+
+    git tag 0.0.0
+    make build
+
+Try it:
+
+    $ python3 -m biocommons.uta-rest
+    Marvin says:
+    There's only one life-form as intelligent as me within thirty parsecs...
+           
+    $ marvin-quote 
+    Marvin says:
+    You think you've got problems? What are you supposed to do if you...
+    
+    $ ipython
+    >>> from biocommons.uta-rest import __version__, get_quote_from_marvin
+    >>> __version__
+    '0.1.dev8+gd5519a8.d20211123'
+    >>> get_quote()
+    "The first ten million years were the worst, ...
 
 
-    >>> import hgvs.dataproviders.utarest
-    >>> import hgvs.assemblymapper
-    >>> hdp = hgvs.dataproviders.utarest.connect()
+# Features
 
-    >>> am = hgvs.assemblymapper.AssemblyMapper(hdp, 
-    ...     assembly_name='GRCh37', alt_aln_method='splign',
-    ...     replace_reference=True)
-Instead of calling from .uta, you are using .utarest. Both implement the hgvs [data providers interface](https://github.com/biocommons/hgvs/blob/main/src/hgvs/dataproviders/interface.py).
+## Code structure and features
 
-## Using with hgvs (2.0+)
+* Modern pyproject.toml with setuptools
+* Versioning based on git tag (only)
+* Easy development setup
+* Support for namespaces
+* Testing with coverage using pytest; tests may be in `tests/`, embedded in the package, and in doc strings
+* Examples for logging and package data
+* Command-line with argument parsing with argparse
 
-The second version of hgvs allows for selecting a data provider from the options contained in the package utaclients. Uta, uta_rest, and cdot are supported. See [utaclients](https://github.com/ccaitlingo/uta-clients) for more info on each dp.
+## DevOps
 
-    >>> import hgvs
-    >>> import utaclients
-    >>> hdp = utaclients.uta_rest.connect()
+* Quality tools: Code reformatting with black and isort
+* GitHub Actions for testing and packaging
 
-    >>> am = hgvs.assemblymapper.AssemblyMapper(hdp, 
-    ...     assembly_name='GRCh37', alt_aln_method='splign',
-    ...     replace_reference=True)
+# To Do
 
-## Developer Installation
-
-    $ python3 -m venv venv
-    $ source venv/bin/activate
-    $ pip install -r requirements.txt
+* Docs (mkdocs w/mkdocstrings or sphinx)
+* Dockerfile
+* test only certain tags
+* fixture example

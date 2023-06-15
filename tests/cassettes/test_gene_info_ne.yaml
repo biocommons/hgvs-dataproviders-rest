@@ -1,0 +1,58 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: http://127.0.0.1:8000/ping
+  response:
+    body:
+      string: '{"data_version":"uta_20180821","schema_version":"1.1","sequence_source":"seqfetcher"}'
+    headers:
+      content-length:
+      - '85'
+      content-type:
+      - application/json
+      date:
+      - Thu, 15 Jun 2023 18:05:45 GMT
+      server:
+      - uvicorn
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: http://127.0.0.1:8000/gene_info/VH
+  response:
+    body:
+      string: 'null'
+    headers:
+      content-length:
+      - '4'
+      content-type:
+      - application/json
+      date:
+      - Thu, 15 Jun 2023 18:05:45 GMT
+      server:
+      - uvicorn
+    status:
+      code: 200
+      message: OK
+version: 1

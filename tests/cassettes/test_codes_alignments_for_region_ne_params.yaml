@@ -1,0 +1,31 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: http://127.0.0.1:8000/alignments_for_region/fake?alt_aln_method=splign
+  response:
+    body:
+      string: '{"detail":[{"loc":["query","start_i"],"msg":"field required","type":"value_error.missing"},{"loc":["query","end_i"],"msg":"field
+        required","type":"value_error.missing"}]}'
+    headers:
+      content-length:
+      - '170'
+      content-type:
+      - application/json
+      date:
+      - Thu, 15 Jun 2023 18:06:01 GMT
+      server:
+      - uvicorn
+    status:
+      code: 422
+      message: Unprocessable Entity
+version: 1

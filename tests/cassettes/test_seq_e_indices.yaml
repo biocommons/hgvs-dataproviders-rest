@@ -1,0 +1,123 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nucleotide&id=NC_000007.13&rettype=fasta&seq_start=10001&seq_stop=10050&tool=bioutils&email=biocommons-dev@googlegroups.com
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAALLzc443AAFzPUNjK0Mgw1AXSJoaKHjk5+YrFCcWZKbmFSskZxQBucX5uakK5joK
+        7kHOGcbmegWGxgoBRZm5iUWVCo7Fxam5STmVXM4hjo7OzqSQXFwAAAAA//8DAOVeN9eFAAAA
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - X-RateLimit-Limit,X-RateLimit-Remaining
+      Cache-Control:
+      - private
+      Connection:
+      - Keep-Alive
+      Content-Disposition:
+      - attachment; filename="sequence.fasta"
+      Content-Security-Policy:
+      - upgrade-insecure-requests
+      Content-Type:
+      - text/plain
+      Date:
+      - Thu, 15 Jun 2023 18:05:42 GMT
+      Keep-Alive:
+      - timeout=4, max=40
+      NCBI-PHID:
+      - 939B80A7E77E056500002AFA430D9D1C.1.1.m_5
+      NCBI-SID:
+      - AF7D22F91EA7E906_3BE7SID
+      Referrer-Policy:
+      - origin-when-cross-origin
+      Server:
+      - Finatra
+      Set-Cookie:
+      - ncbi_sid=AF7D22F91EA7E906_3BE7SID; domain=.nih.gov; path=/; expires=Sat, 15
+        Jun 2024 18:05:42 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Transfer-Encoding:
+      - chunked
+      X-RateLimit-Limit:
+      - '3'
+      X-RateLimit-Remaining:
+      - '2'
+      X-UA-Compatible:
+      - IE=Edge
+      X-XSS-Protection:
+      - 1; mode=block
+      content-encoding:
+      - gzip
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: http://127.0.0.1:8000/ping
+  response:
+    body:
+      string: '{"data_version":"uta_20180821","schema_version":"1.1","sequence_source":"seqfetcher"}'
+    headers:
+      content-length:
+      - '85'
+      content-type:
+      - application/json
+      date:
+      - Thu, 15 Jun 2023 18:05:43 GMT
+      server:
+      - uvicorn
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: http://127.0.0.1:8000/seq/NC_000007.13?start_i=10000&end_i=10050
+  response:
+    body:
+      string: '"CTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCT"'
+    headers:
+      content-length:
+      - '52'
+      content-type:
+      - application/json
+      date:
+      - Thu, 15 Jun 2023 18:05:43 GMT
+      server:
+      - uvicorn
+    status:
+      code: 200
+      message: OK
+version: 1
