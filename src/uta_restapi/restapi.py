@@ -1,7 +1,7 @@
 from hgvs.dataproviders.uta import *
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import Optional, List  #For optional type hinting
+from typing import Optional, List, Union  #For optional type hinting
 import datetime
 
 app = FastAPI()
@@ -81,22 +81,22 @@ async def ping() -> dict:
     return d
 
 @app.get("/seq/{ac}")
-async def seq(ac : str, start_i: int | None = None, end_i: int | None = None) -> str:
+async def seq(ac : str, start_i: Optional[int] = None, end_i: Optional[int] = None) -> str:
     try:
         return conn.get_seq(ac, start_i, end_i)
     except HGVSDataNotAvailableError as e: http_404(e)
-     
+
 @app.get("/acs_for_protein_seq/{seq}")
 async def acs_for_protein_seq(seq : str) -> List:
     try:
         return conn.get_acs_for_protein_seq(seq)
     except RuntimeError as e: http_404(e)
-    
-@app.get("/gene_info/{gene}", response_model = Gene | None)
+
+@app.get("/gene_info/{gene}", response_model = Optional[Gene])
 async def gene_info(gene : str):
     r = conn.get_gene_info(gene)
     return r if r == None else Gene(hgnc=r[0], maploc=r[1], descr=r[2], summary=r[3], aliases=r[4], added=r[5])
-    
+
 @app.get("/tx_exons/{tx_ac}/{alt_ac}", response_model = List[Transcript_Exon])
 async def tx_exons(tx_ac : str, alt_ac : str, alt_aln_method: str):
     try:
@@ -119,7 +119,7 @@ async def tx_for_region(alt_ac : str, alt_aln_method : str, start_i : int, end_i
     return conn.get_tx_for_region(alt_ac, alt_aln_method, start_i, end_i)
 
 @app.get("/alignments_for_region/{alt_ac}", status_code=200)
-async def alignments_for_region(alt_ac, start_i: int, end_i: int, alt_aln_method : str | None = None) -> List:
+async def alignments_for_region(alt_ac, start_i: int, end_i: int, alt_aln_method : Optional[str] = None) -> List:
     return conn.get_alignments_for_region(alt_ac, start_i, end_i, alt_aln_method)
 
 @app.get("/tx_identity_info/{tx_ac}", response_model=Transcript)
@@ -157,9 +157,9 @@ async def similar_transcripts(tx_ac : str):
     for ts in rows:
         transcripts.append(Similar_Transcript(tx_ac1=ts[0], tx_ac2=ts[1], hgnc_eq=ts[2], cds_eq=ts[3], es_fp_eq=ts[4], cds_es_fp_eq=ts[5], cds_exon_lengths_fp_eq=ts[6]))
     return transcripts
-    
+
 @app.get("/pro_ac_for_tx_ac/{tx_ac}")
-async def pro_ac_for_tx_ac(tx_ac : str) -> str | None:
+async def pro_ac_for_tx_ac(tx_ac : str) -> Union[str, None]:
     return conn.get_pro_ac_for_tx_ac(tx_ac)
 
 @app.get("/assembly_map/{assembly_name}")
@@ -167,4 +167,3 @@ async def assmbly_map(assembly_name : str) -> dict:
     try:
         return conn.get_assembly_map(assembly_name)
     except Exception as e: http_404(e)
-
