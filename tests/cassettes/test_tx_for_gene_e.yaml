@@ -21,7 +21,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 14 Jun 2023 23:26:01 GMT
+      - Thu, 15 Jun 2023 17:26:57 GMT
       server:
       - uvicorn
     status:
@@ -42,14 +42,14 @@ interactions:
     uri: http://127.0.0.1:8000/tx_for_gene/VHL
   response:
     body:
-      string: '[["VHL",840,1482,"ENST00000256474","NC_000003.11","genebuild"],["VHL",213,855,"NM_000551.3","AC_000135.1","splign"],["VHL",213,855,"NM_000551.3","NC_000003.11","blat"],["VHL",213,855,"NM_000551.3","NC_000003.11","splign"],["VHL",213,855,"NM_000551.3","NC_000003.12","splign"],["VHL",213,855,"NM_000551.3","NC_018914.2","splign"],["VHL",213,855,"NM_000551.3","NG_008212.3","splign"],["VHL",213,732,"NM_198156.2","AC_000135.1","splign"],["VHL",213,732,"NM_198156.2","NC_000003.11","blat"],["VHL",213,732,"NM_198156.2","NC_000003.11","splign"],["VHL",213,732,"NM_198156.2","NC_000003.12","splign"],["VHL",213,732,"NM_198156.2","NC_018914.2","splign"],["VHL",60,579,"ENST00000345392","NC_000003.11","genebuild"],["VHL",null,null,"ENST00000477538","NC_000003.11","genebuild"],["VHL",213,795,"NM_001354723.1","NC_000003.11","splign"],["VHL",213,795,"NM_001354723.1","NC_000003.12","splign"]]'
+      string: '[["VHL",213,855,"NM_000551.3","AC_000135.1","splign"],["VHL",213,855,"NM_000551.3","NC_000003.11","blat"],["VHL",213,855,"NM_000551.3","NC_000003.11","splign"],["VHL",213,855,"NM_000551.3","NC_000003.12","splign"],["VHL",213,855,"NM_000551.3","NC_018914.2","splign"],["VHL",213,855,"NM_000551.3","NG_008212.3","splign"],["VHL",213,732,"NM_198156.2","AC_000135.1","splign"],["VHL",213,732,"NM_198156.2","NC_000003.11","blat"],["VHL",213,732,"NM_198156.2","NC_000003.11","splign"],["VHL",213,732,"NM_198156.2","NC_000003.12","splign"],["VHL",213,732,"NM_198156.2","NC_018914.2","splign"],["VHL",840,1482,"ENST00000256474","NC_000003.11","genebuild"],["VHL",60,579,"ENST00000345392","NC_000003.11","genebuild"],["VHL",null,null,"ENST00000477538","NC_000003.11","genebuild"],["VHL",213,795,"NM_001354723.1","NC_000003.11","splign"],["VHL",213,795,"NM_001354723.1","NC_000003.12","splign"]]'
     headers:
       content-length:
       - '885'
       content-type:
       - application/json
       date:
-      - Wed, 14 Jun 2023 23:26:01 GMT
+      - Thu, 15 Jun 2023 17:26:57 GMT
       server:
       - uvicorn
     status:
