@@ -9,14 +9,8 @@ import vcr as vcrpy
 from vcr.filters import decode_response
 from typing import List, Dict
 
-os.environ['UTAREST_URL'] = 'http://127.0.0.1:8000' # Used in utarest.connect()
-test_dir = os.path.dirname(__file__)
-test_data_dir = os.path.join(test_dir, "data", "cassettes")
 
-vcr = vcrpy.VCR(
-    cassette_library_dir=test_data_dir,
-    record_mode=os.environ.get("VCR_RECORD_MODE", "new_episodes"),
-)
+os.environ['UTAREST_URL'] = 'http://127.0.0.1:8000' # Used in utarest.connect()
 
 def just_values(dictionaries: List[Dict]) -> List[List]:
     """Like the opposite of dict(), when dict() can't be used.
