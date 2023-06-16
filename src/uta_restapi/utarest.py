@@ -46,7 +46,7 @@ class UTAREST(Interface):
         return self.pingresponse["schema_version"]
     
     def sequence_source(self):
-        return self.pingresponse["data_version"]
+        return self.pingresponse["sequence_source"]
     
     def optional_parameters(self, names: list, params: list) -> str:
         """
