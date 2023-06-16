@@ -7,9 +7,11 @@ which uses:
 
 """
 
-import requests
 import os
+
+import requests
 from hgvs.dataproviders.interface import Interface
+
 
 def connect():
     # Eventually replace this fake default url :)

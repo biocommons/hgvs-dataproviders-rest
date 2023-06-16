@@ -1,8 +1,9 @@
-from hgvs.dataproviders.uta import *
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from typing import Optional, List, Union  #For optional type hinting
 import datetime
+from typing import List, Optional, Union  # For optional type hinting
+
+from fastapi import FastAPI, HTTPException
+from hgvs.dataproviders.uta import *
+from pydantic import BaseModel
 
 app = FastAPI()
 conn = connect()
