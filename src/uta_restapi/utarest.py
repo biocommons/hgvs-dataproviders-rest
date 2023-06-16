@@ -24,7 +24,7 @@ class UTAREST(Interface):
 
     def __init__(self, server_url, mode=None, cache=None):
         self.server = server_url
-        self.pingresponse = requests.get(server_url + "/ping").json()
+        self.pingresponse = requests.get(server_url + "/ping", timeout=5).json()
         super(UTAREST, self).__init__(mode, cache)
 
     def __str__(self):
@@ -72,7 +72,7 @@ class UTAREST(Interface):
     def get_seq(self, ac, start_i=None, end_i=None):
         url = ("{serv}/seq/{ac}").format(serv=self.server, ac=ac)
         url += self.optional_parameters(["start_i", "end_i"], [start_i, end_i])
-        return requests.get(url)
+        return requests.get(url, timeout=5)
 
     def get_acs_for_protein_seq(self, seq):
         """
@@ -82,7 +82,7 @@ class UTAREST(Interface):
         list.
         """
         url = ("{serv}/acs_for_protein_seq/{seq}").format(serv=self.server, seq=seq)
-        return requests.get(url)
+        return requests.get(url, timeout=5)
 
     def get_gene_info(self, gene):
         """
@@ -103,7 +103,7 @@ class UTAREST(Interface):
 
         """
         url = ("{serv}/gene_info/{gene}").format(serv=self.server, gene=gene)
-        return requests.get(url)
+        return requests.get(url, timeout=5)
 
     def get_tx_exons(self, tx_ac, alt_ac, alt_aln_method):
         """
@@ -154,7 +154,7 @@ class UTAREST(Interface):
         url = ("{serv}/tx_exons/{tx_ac}/{alt_ac}?alt_aln_method={alt_aln_method}").format(
             serv=self.server, tx_ac=tx_ac, alt_ac=alt_ac, alt_aln_method=alt_aln_method
         )
-        return requests.get(url)
+        return requests.get(url, timeout=5)
 
     def get_tx_for_gene(self, gene):
         """
@@ -164,7 +164,7 @@ class UTAREST(Interface):
         :type gene: str
         """
         url = ("{serv}/tx_for_gene/{gene}").format(serv=self.server, gene=gene)
-        return requests.get(url)
+        return requests.get(url, timeout=5)
 
     def get_tx_for_region(self, alt_ac, alt_aln_method, start_i, end_i):
         """
@@ -178,7 +178,7 @@ class UTAREST(Interface):
         url = ("{serv}/tx_for_region/{alt_ac}?alt_aln_method={alt_aln_method}&start_i={start_i}&end_i={end_i}").format(
             serv=self.server, alt_ac=alt_ac, alt_aln_method=alt_aln_method, start_i=start_i, end_i=end_i
         )
-        return requests.get(url)
+        return requests.get(url, timeout=5)
 
     def get_alignments_for_region(self, alt_ac, start_i, end_i, alt_aln_method=None):
         """
@@ -198,7 +198,7 @@ class UTAREST(Interface):
         if not alt_aln_method == None:
             url += ("alt_aln_method={alt_aln_method}").format(alt_aln_method=alt_aln_method)
         """
-        return requests.get(url)
+        return requests.get(url, timeout=5)
 
     def get_tx_identity_info(self, tx_ac):
         """returns features associated with a single transcript.
@@ -219,7 +219,7 @@ class UTAREST(Interface):
 
         """
         url = ("{serv}/tx_identity_info/{tx_ac}").format(serv=self.server, tx_ac=tx_ac)
-        return requests.get(url)
+        return requests.get(url, timeout=5)
 
     def get_tx_info(self, tx_ac, alt_ac, alt_aln_method):
         """return a single transcript info for supplied accession (tx_ac, alt_ac, alt_aln_method), or None if not found
@@ -247,7 +247,7 @@ class UTAREST(Interface):
         url = ("{serv}/tx_info/{tx_ac}/{alt_ac}?alt_aln_method={alt_aln_method}").format(
             serv=self.server, tx_ac=tx_ac, alt_ac=alt_ac, alt_aln_method=alt_aln_method
         )
-        return requests.get(url)
+        return requests.get(url, timeout=5)
 
     def get_tx_mapping_options(self, tx_ac):
         """Return all transcript alignment sets for a given transcript
@@ -267,7 +267,7 @@ class UTAREST(Interface):
 
         """
         url = ("{serv}/tx_mapping_options/{tx_ac}").format(serv=self.server, tx_ac=tx_ac)
-        return requests.get(url)
+        return requests.get(url, timeout=5)
 
     def get_similar_transcripts(self, tx_ac):
         """Return a list of transcripts that are similar to the given
@@ -310,15 +310,15 @@ class UTAREST(Interface):
 
         """
         url = ("{serv}/similar_transcripts/{tx_ac}").format(serv=self.server, tx_ac=tx_ac)
-        return requests.get(url)
+        return requests.get(url, timeout=5)
 
     def get_pro_ac_for_tx_ac(self, tx_ac):
         """Return the (single) associated protein accession for a given transcript
         accession, or None if not found."""
         url = ("{serv}/pro_ac_for_tx_ac/{tx_ac}").format(serv=self.server, tx_ac=tx_ac)
-        return requests.get(url)
+        return requests.get(url, timeout=5)
 
     def get_assembly_map(self, assembly_name):
         """Return a list of accessions for the specified assembly name (e.g., GRCh38.p5)."""
         url = ("{serv}/assembly_map/{assembly_name}").format(serv=self.server, assembly_name=assembly_name)
-        return requests.get(url)
+        return requests.get(url, timeout=5)
