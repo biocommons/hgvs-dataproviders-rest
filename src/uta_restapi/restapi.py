@@ -1,10 +1,10 @@
+import datetime
 from typing import List, Optional, Union  # For optional type hinting
 
 from fastapi import FastAPI, HTTPException
 from hgvs.dataproviders.uta import UTABase, connect
 from hgvs.exceptions import HGVSDataNotAvailableError, HGVSError
 from pydantic import BaseModel
-import datetime
 
 app = FastAPI()
 conn = connect()
