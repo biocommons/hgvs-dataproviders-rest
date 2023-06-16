@@ -1,6 +1,0 @@
-fastapi 
-pydantic
-uvicorn
-hgvs
-vcrpy
-pytest-vcr
