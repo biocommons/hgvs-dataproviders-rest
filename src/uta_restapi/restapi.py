@@ -2,7 +2,8 @@ import datetime
 from typing import List, Optional, Union  # For optional type hinting
 
 from fastapi import FastAPI, HTTPException
-from hgvs.dataproviders.uta import *
+from hgvs.dataproviders.uta import connect, UTABase
+from hgvs.exceptions import HGVSDataNotAvailableError, HGVSError
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -10,7 +11,7 @@ conn = connect()
 
 
 def http_404(hgvs_exception=None):
-    raise HTTPException(status_code=404, detail="Not found" if hgvs_exception == None else str(hgvs_exception))
+    raise HTTPException(status_code=404, detail="Not found" if not hgvs_exception else str(hgvs_exception))
 
 
 def check_valid_ac(ac):
@@ -106,14 +107,14 @@ async def acs_for_protein_seq(seq: str) -> List:
 @app.get("/gene_info/{gene}", response_model=Optional[Gene])
 async def gene_info(gene: str):
     r = conn.get_gene_info(gene)
-    return r if r == None else Gene(hgnc=r[0], maploc=r[1], descr=r[2], summary=r[3], aliases=r[4], added=r[5])
+    return r if not r else Gene(hgnc=r[0], maploc=r[1], descr=r[2], summary=r[3], aliases=r[4], added=r[5])
 
 
 @app.get("/tx_exons/{tx_ac}/{alt_ac}", response_model=List[Transcript_Exon])
 async def tx_exons(tx_ac: str, alt_ac: str, alt_aln_method: str):
     try:
         rows = conn.get_tx_exons(tx_ac, alt_ac, alt_aln_method)
-        if rows == None:
+        if not rows:
             return rows
         # Make a list of Transcript_Exon objects
         tx_exons = []
@@ -187,7 +188,7 @@ async def tx_info(tx_ac: str, alt_ac: str, alt_aln_method: str):
 @app.get("/tx_mapping_options/{tx_ac}", response_model=List[Alignment_Set])
 async def tx_mapping_options(tx_ac: str):
     rows = conn.get_tx_mapping_options(tx_ac)
-    if rows == None:
+    if not rows:
         return rows
     # Make a list of Alignment_Set objects
     alignments = []
@@ -199,7 +200,7 @@ async def tx_mapping_options(tx_ac: str):
 @app.get("/similar_transcripts/{tx_ac}", response_model=List[Similar_Transcript])
 async def similar_transcripts(tx_ac: str):
     rows = conn.get_similar_transcripts(tx_ac)
-    if rows == None:
+    if not rows:
         return rows
     # Make a list of Transcript objects
     transcripts = []

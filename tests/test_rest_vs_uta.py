@@ -5,7 +5,6 @@ import pytest
 
 import os
 import yaml
-import vcr as vcrpy
 from vcr.filters import decode_response
 from typing import List, Dict
 

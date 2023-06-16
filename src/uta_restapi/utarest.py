@@ -62,7 +62,7 @@ class UTAREST(Interface):
         retval = "?"
         params_added = False
         for (param, name) in zip(params, names):
-            if not param == None:
+            if param:
                 if params_added:
                     retval += "&"
                 retval += ("{name}={param}").format(name=name, param=param)
