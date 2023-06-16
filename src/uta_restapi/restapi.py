@@ -22,7 +22,7 @@ def check_valid_ac(ac):
         http_404(e)
 
 
-class Gene(BaseModel):
+class Gene(BaseModel): 
     hgnc: str
     maploc: str
     descr: str
