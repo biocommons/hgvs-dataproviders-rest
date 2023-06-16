@@ -14,7 +14,7 @@ def http_404(hgvs_exception=None):
     raise HTTPException(status_code=404, detail="Not found" if not hgvs_exception else str(hgvs_exception))
 
 
-def check_valid_ac(ac):
+def check_valid_ac(ac): 
     try:
         conn.get_seq(ac, 0, 1)
         return
