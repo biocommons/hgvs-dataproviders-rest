@@ -8,11 +8,11 @@ This package includes a REST api (restapi.py) for uta that stands between hgvs a
 
 ## Installing the UTA Rest API Locally
 
-Install docker. ***NOTE: Will be under biocommons instead of ccaitlingo later***
+Install docker.
 
-    $ docker pull ccaitlingo/uta-rest:uta-rest
+    $ docker pull biocommons/uta-rest:uta-rest
     $ docker volume create --name=uta-rest
-    $ docker run -p 8000:8000 ccaitlingo/uta-rest:uta-rest
+    $ docker run -p 8000:8000 biocommons/uta-rest:uta-rest
 
 ## Using with hgvs
 
