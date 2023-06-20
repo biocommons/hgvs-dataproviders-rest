@@ -6,13 +6,13 @@ The uta database is used by [hgvs](https://github.com/biocommons/hgvs) to perfor
 
 This package includes a REST api (restapi.py) for uta that stands between hgvs and PostgreSQL, along with a data provider for hgvs (utarest.py) that acts as its client.
 
- ## Installing the UTA Rest API Locally
+## Installing the UTA Rest API Locally
 
-Install docker.
+Install docker. ***NOTE: Will be under biocommons instead of ccaitlingo later***
 
-    $ docker pull biocommons/uta-rest:uta-rest
+    $ docker pull ccaitlingo/uta-rest:uta-rest
     $ docker volume create --name=uta-rest
-    $ docker run -p 8000:8000 biocommons/uta-rest:uta-rest
+    $ docker run -p 8000:8000 ccaitlingo/uta-rest:uta-rest
 
 ## Using with hgvs
 
@@ -23,7 +23,7 @@ Simply pass the result of utarest's connect() function as an argument into any [
     >>> import hgvs.assemblymapper
     >>> hdp = hgvs.dataproviders.utarest.connect()
 
-    >>> am = hgvs.assemblymapper.AssemblyMapper(hdp, 
+    >>> am = hgvs.assemblymapper.AssemblyMapper(hdp,
     ...     assembly_name='GRCh37', alt_aln_method='splign',
     ...     replace_reference=True)
 Instead of calling from .uta, you are using .utarest. Both implement the hgvs [data providers interface](https://github.com/biocommons/hgvs/blob/main/src/hgvs/dataproviders/interface.py).
@@ -36,7 +36,7 @@ The second version of hgvs allows for selecting a data provider from the options
     >>> import utaclients
     >>> hdp = utaclients.uta_rest.connect()
 
-    >>> am = hgvs.assemblymapper.AssemblyMapper(hdp, 
+    >>> am = hgvs.assemblymapper.AssemblyMapper(hdp,
     ...     assembly_name='GRCh37', alt_aln_method='splign',
     ...     replace_reference=True)
 
