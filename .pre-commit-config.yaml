@@ -3,6 +3,7 @@ repos:
     rev: v2.3.0
     hooks:
     -   id: flake8
+        args: ["--ignore=E501,E133"]
     -   id: check-yaml
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
@@ -14,6 +15,7 @@ repos:
     rev: 1.7.5
     hooks:
     -   id: bandit
+        args: ["--skip=B101"]
 -   repo: https://github.com/pycqa/isort
     rev: 5.12.0
     hooks:

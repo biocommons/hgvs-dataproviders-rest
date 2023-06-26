@@ -14,6 +14,12 @@ Install docker. ***NOTE: Will be under biocommons instead of ccaitlingo later***
     $ docker volume create --name=uta-rest
     $ docker run -p 8000:8000 ccaitlingo/uta-rest:uta-rest
 
+Or without docker:
+
+    $ make devready
+    $ source venv/bin/activate
+    $ uvicorn uta_restapi.restapi:app
+
 ## Using with hgvs
 
 Simply pass the result of utarest's connect() function as an argument into any [hgvs](https://github.com/biocommons/hgvs) tool, e.g. Assembly Mapper.
@@ -42,6 +48,6 @@ The second version of hgvs allows for selecting a data provider from the options
 
 ## Developer Installation
 
-    $ python3 -m venv venv
+    $ make devready
     $ source venv/bin/activate
-    $ pip install -r requirements.txt
+    $ uvicorn uta_restapi.restapi:app --reload
