@@ -1,5 +1,5 @@
 import datetime
-from typing import List, Optional, Union  # For optional type hinting
+from typing import List, Optional, Union
 
 from fastapi import FastAPI, HTTPException
 from hgvs.dataproviders.uta import UTABase, connect
@@ -12,14 +12,6 @@ conn = connect()
 
 def http_404(hgvs_exception=None):
     raise HTTPException(status_code=404, detail="Not found" if not hgvs_exception else str(hgvs_exception))
-
-
-def check_valid_ac(ac):
-    try:
-        conn.get_seq(ac, 0, 1)
-        return
-    except HGVSDataNotAvailableError as e:
-        http_404(e)
 
 
 class Gene(BaseModel):
@@ -78,9 +70,9 @@ class Alignment_Set(BaseModel):
     alt_aln_method: str
 
 
-# ping endpoint -> return data, schema, sequence version in json
 @app.get("/ping")
 async def ping() -> dict:
+    """returns the data_version, schema_version, and sequence_source from uta."""
     d = {}
     d["data_version"] = conn.data_version()
     d["schema_version"] = conn.schema_version()
@@ -90,6 +82,10 @@ async def ping() -> dict:
 
 @app.get("/seq/{ac}")
 async def seq(ac: str, start_i: Optional[int] = None, end_i: Optional[int] = None) -> str:
+    """
+    calls get_seq from utarest.py
+    raises an error if the accession number is not found in the database.
+    """
     try:
         return conn.get_seq(ac, start_i, end_i)
     except HGVSDataNotAvailableError as e:
@@ -98,6 +94,10 @@ async def seq(ac: str, start_i: Optional[int] = None, end_i: Optional[int] = Non
 
 @app.get("/acs_for_protein_seq/{seq}")
 async def acs_for_protein_seq(seq: str) -> List:
+    """
+    calls get_acs_for_protein_seq from utarest.py
+    raises an error if the sequence is not found in the database.
+    """
     try:
         return conn.get_acs_for_protein_seq(seq)
     except RuntimeError as e:
@@ -106,12 +106,21 @@ async def acs_for_protein_seq(seq: str) -> List:
 
 @app.get("/gene_info/{gene}", response_model=Optional[Gene])
 async def gene_info(gene: str):
+    """
+    calls get_gene_info from utarest.py
+    returns information as a Gene model or None.
+    """
     r = conn.get_gene_info(gene)
     return r if not r else Gene(hgnc=r[0], maploc=r[1], descr=r[2], summary=r[3], aliases=r[4], added=r[5])
 
 
 @app.get("/tx_exons/{tx_ac}/{alt_ac}", response_model=List[Transcript_Exon])
 async def tx_exons(tx_ac: str, alt_ac: str, alt_aln_method: str):
+    """
+    calls get_tx_exons from utarest.py
+    raises an error if no transcript exons are found for the given accessions and alignment method.
+    otherwise returns information as a list of Transcript models.
+    """
     try:
         rows = conn.get_tx_exons(tx_ac, alt_ac, alt_aln_method)
         if not rows:
@@ -148,22 +157,30 @@ async def tx_exons(tx_ac: str, alt_ac: str, alt_aln_method: str):
 
 @app.get("/tx_for_gene/{gene}")
 async def tx_for_gene(gene: str) -> List:
+    """calls get_tx_for_gene from utarest.py"""
     tx = conn.get_tx_for_gene(gene)
     return tx
 
 
 @app.get("/tx_for_region/{alt_ac}")
 async def tx_for_region(alt_ac: str, alt_aln_method: str, start_i: int, end_i: int) -> List:
+    """calls get_tx_for_region from utarest.py"""
     return conn.get_tx_for_region(alt_ac, alt_aln_method, start_i, end_i)
 
 
 @app.get("/alignments_for_region/{alt_ac}", status_code=200)
 async def alignments_for_region(alt_ac, start_i: int, end_i: int, alt_aln_method: Optional[str] = None) -> List:
+    """calls get_alignments_for_region from utarest.py"""
     return conn.get_alignments_for_region(alt_ac, start_i, end_i, alt_aln_method)
 
 
 @app.get("/tx_identity_info/{tx_ac}", response_model=Transcript)
 async def tx_identity_info(tx_ac: str):
+    """
+    calls get_tx_identity_info from utarest.py
+    raises an error if the transcript acession is not found in the database.
+    otherwise returns information as a Transcript model.
+    """
     try:
         r = conn.get_tx_identity_info(tx_ac)
         return Transcript(
@@ -175,6 +192,11 @@ async def tx_identity_info(tx_ac: str):
 
 @app.get("/tx_info/{tx_ac}/{alt_ac}", response_model=Transcript, response_model_exclude_unset=True)
 async def tx_info(tx_ac: str, alt_ac: str, alt_aln_method: str):
+    """
+    calls get_tx_info from utarest.py
+    raises an error if no transcripts are found for the given accessions and alignment method, or if uta recieves more than one transcript when fetching.
+    otherwise returns information as a Transcript model.
+    """
     try:
         r = conn.get_tx_info(tx_ac, alt_ac, alt_aln_method)
         return Transcript(hgnc=r[0], cds_start_i=r[1], cds_end_i=r[2], tx_ac=r[3], alt_ac=r[4], alt_aln_method=r[5])
@@ -187,6 +209,10 @@ async def tx_info(tx_ac: str, alt_ac: str, alt_aln_method: str):
 
 @app.get("/tx_mapping_options/{tx_ac}", response_model=List[Alignment_Set])
 async def tx_mapping_options(tx_ac: str):
+    """
+    calls get_tx_mapping_options from utarest.py
+    returns information as a list of Alignment_Set models or None.
+    """
     rows = conn.get_tx_mapping_options(tx_ac)
     if not rows:
         return rows
@@ -199,6 +225,10 @@ async def tx_mapping_options(tx_ac: str):
 
 @app.get("/similar_transcripts/{tx_ac}", response_model=List[Similar_Transcript])
 async def similar_transcripts(tx_ac: str):
+    """
+    calls get_similar_transcripts from utarest.py
+    returns information as a list of Similar_Transcript models or None.
+    """
     rows = conn.get_similar_transcripts(tx_ac)
     if not rows:
         return rows
@@ -221,11 +251,16 @@ async def similar_transcripts(tx_ac: str):
 
 @app.get("/pro_ac_for_tx_ac/{tx_ac}")
 async def pro_ac_for_tx_ac(tx_ac: str) -> Union[str, None]:
+    """calls get_pro_ac_for_tx_ac from utarest.py"""
     return conn.get_pro_ac_for_tx_ac(tx_ac)
 
 
 @app.get("/assembly_map/{assembly_name}")
 async def assmbly_map(assembly_name: str) -> dict:
+    """
+    calls get_assembly_map from utarest.py
+    raises an error if not given an exisiting assembly map name
+    """
     try:
         return conn.get_assembly_map(assembly_name)
     except Exception as e:
