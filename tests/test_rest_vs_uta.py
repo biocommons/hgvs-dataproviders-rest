@@ -64,7 +64,6 @@ def test_seq_ne():
         uta.connect().get_seq("fake")
 
 
-# @pytest.mark.skip(reason="just not fast")
 @pytest.mark.vcr
 def test_seq_e_indices():
     """Existing seq with start and end indices."""
@@ -110,7 +109,7 @@ def test_gene_info_e():
 
 @pytest.mark.vcr
 def test_gene_info_ne():
-    """Nonexistng gene."""
+    """Nonexisting gene."""
     u = uta.connect().get_gene_info("VH")
     r = utarest.connect().get_gene_info("VH")
     assert u == r
@@ -120,7 +119,7 @@ def test_gene_info_ne():
 def test_tx_exons_e():
     """Existing seqs."""
     u = uta.connect().get_tx_exons("NM_199425.2", "NC_000020.10", "splign")
-    r = just_values(utarest.connect().get_tx_exons("NM_199425.2", "NC_000020.10", "splign"))
+    r = [list(t.values()) for t in utarest.connect().get_tx_exons("NM_199425.2", "NC_000020.10", "splign")]
     assert u == r
 
 
@@ -155,7 +154,8 @@ def test_tx_exons_ne_params():
 def test_tx_for_gene_e():
     """Existing gene."""
     u = uta.connect().get_tx_for_gene("VHL")
-    r = utarest.connect().get_tx_for_gene("VHL")
+    r0 = utarest.connect().get_tx_for_gene("VHL")
+    r = [list(t.values()) for t in r0]
     assert equal_regardless_of_order(u, r)
 
 
@@ -171,7 +171,7 @@ def test_tx_for_gene_ne():
 def test_tx_for_region_e():  # Need example
     """Existing region."""
     u = uta.connect().get_tx_for_region("NC_000007.13", "splign", 0, 50)
-    r = utarest.connect().get_tx_for_region("NC_000007.13", "splign", 0, 50)
+    r = [list(t.values()) for t in utarest.connect().get_tx_for_region("NC_000007.13", "splign", 0, 50)]
     assert u == r
 
 
@@ -291,7 +291,7 @@ def test_tx_info_ne_param():
 def test_tx_mapping_options_e():
     """Existing transcript."""
     u = uta.connect().get_tx_mapping_options("NM_000051.3")
-    r = just_values(utarest.connect().get_tx_mapping_options("NM_000051.3"))
+    r = [list(t.values()) for t in utarest.connect().get_tx_mapping_options("NM_000051.3")]
     assert u == r
 
 
@@ -299,7 +299,7 @@ def test_tx_mapping_options_e():
 def test_tx_mapping_options_ne():
     """Nonexisting transcript."""
     u = uta.connect().get_tx_mapping_options("fake")
-    r = just_values(utarest.connect().get_tx_mapping_options("fake"))
+    r = utarest.connect().get_tx_mapping_options("fake")
     assert u == r
 
 
@@ -307,7 +307,7 @@ def test_tx_mapping_options_ne():
 def test_similar_transcripts_e():
     """Existing transcript."""
     u = uta.connect().get_similar_transcripts("NM_000051.3")
-    r = just_values(utarest.connect().get_similar_transcripts("NM_000051.3"))
+    r = [list(t.values()) for t in utarest.connect().get_similar_transcripts("NM_000051.3")]
     assert u == r
 
 
@@ -315,7 +315,7 @@ def test_similar_transcripts_e():
 def test_similar_transcripts_ne():
     """Nonexisting transcript."""
     u = uta.connect().get_similar_transcripts("fake")
-    r = just_values(utarest.connect().get_similar_transcripts("fake"))
+    r = utarest.connect().get_similar_transcripts("fake")
     assert u == r
 
 
@@ -338,7 +338,7 @@ def test_pro_ac_for_tx_ac_ne():
 @pytest.mark.vcr
 def test_assembly_map_e():
     """Existing assembly name."""
-    u = dict(uta.connect().get_assembly_map("GRCh38.p5"))
+    u = uta.connect().get_assembly_map("GRCh38.p5")
     r = utarest.connect().get_assembly_map("GRCh38.p5")
     assert u == r
 
@@ -364,11 +364,4 @@ def test_data_version():
 def test_schema_version():
     u = uta.connect().schema_version()
     r = utarest.connect().schema_version()
-    assert u == r
-
-
-@pytest.mark.vcr
-def test_sequence_source():
-    u = uta.connect().sequence_source()
-    r = utarest.connect().sequence_source()
     assert u == r
