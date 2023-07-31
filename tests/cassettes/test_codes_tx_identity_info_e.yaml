@@ -14,14 +14,14 @@ interactions:
     uri: http://127.0.0.1:8000/tx_identity_info/NM_199425.2
   response:
     body:
-      string: '{"hgnc":"VSX1","cds_start_i":283,"cds_end_i":1003,"tx_ac":"NM_199425.2","alt_ac":"NM_199425.2","alt_aln_method":"transcript","lengths":[707,79,410]}'
+      string: '{"tx_ac":"NM_199425.2","alt_ac":"NM_199425.2","alt_aln_method":"transcript","cds_start_i":283,"cds_end_i":1003,"lengths":[707,79,410],"hgnc":"VSX1"}'
     headers:
       content-length:
       - '148'
       content-type:
       - application/json
       date:
-      - Mon, 26 Jun 2023 20:49:39 GMT
+      - Mon, 31 Jul 2023 17:30:40 GMT
       server:
       - uvicorn
     status:

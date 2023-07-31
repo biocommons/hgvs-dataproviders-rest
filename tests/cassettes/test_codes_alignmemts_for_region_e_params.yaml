@@ -14,15 +14,16 @@ interactions:
     uri: http://127.0.0.1:8000/alignments_for_region/NC_000007.13?alt_aln_method=splign
   response:
     body:
-      string: '{"detail":[{"loc":["query","start_i"],"msg":"field required","type":"value_error.missing"},{"loc":["query","end_i"],"msg":"field
-        required","type":"value_error.missing"}]}'
+      string: '{"detail":[{"type":"missing","loc":["query","start_i"],"msg":"Field
+        required","input":null,"url":"https://errors.pydantic.dev/2.1/v/missing"},{"type":"missing","loc":["query","end_i"],"msg":"Field
+        required","input":null,"url":"https://errors.pydantic.dev/2.1/v/missing"}]}'
     headers:
       content-length:
-      - '170'
+      - '272'
       content-type:
       - application/json
       date:
-      - Mon, 26 Jun 2023 20:49:39 GMT
+      - Mon, 31 Jul 2023 17:30:40 GMT
       server:
       - uvicorn
     status:
