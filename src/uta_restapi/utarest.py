@@ -10,6 +10,7 @@ from typing import List, Optional, Union
 
 import requests
 from hgvs.dataproviders.interface import Interface
+from hgvs.dataproviders.seqfetcher import SeqFetcher
 
 
 def connect():
@@ -23,6 +24,7 @@ class UTAREST(Interface):
 
     def __init__(self, server_url, mode=None, cache=None):
         self.server = server_url
+        self.seqfetcher = SeqFetcher()
         self.pingresponse = requests.get(server_url + "/ping", timeout=5).json()
         super(UTAREST, self).__init__(mode, cache)
 
@@ -87,7 +89,7 @@ class UTAREST(Interface):
         url = ("{serv}/acs_for_protein_seq/{seq}").format(serv=self.server, seq=seq)
         return requests.get(url, timeout=5).json()
 
-    def get_gene_info(self, gene: str) -> dict:
+    def get_gene_info(self, gene: str) -> Union[dict, None]:
         """
         returns basic information about the gene.
 
@@ -108,7 +110,7 @@ class UTAREST(Interface):
         url = ("{serv}/gene_info/{gene}").format(serv=self.server, gene=gene)
         return requests.get(url, timeout=5).json()
 
-    def get_tx_exons(self, tx_ac: str, alt_ac: str, alt_aln_method: str) -> dict:
+    def get_tx_exons(self, tx_ac: str, alt_ac: str, alt_aln_method: str) -> List[dict]:
         """
         return transcript exon info for supplied accession (tx_ac, alt_ac, alt_aln_method), or None if not found
 
@@ -159,7 +161,7 @@ class UTAREST(Interface):
         )
         return requests.get(url, timeout=5).json()
 
-    def get_tx_for_gene(self, gene: str) -> List:
+    def get_tx_for_gene(self, gene: str) -> Union[List[dict], None]:
         """
         return transcript info records for supplied gene, in order of decreasing length
 
@@ -169,7 +171,7 @@ class UTAREST(Interface):
         url = ("{serv}/tx_for_gene/{gene}").format(serv=self.server, gene=gene)
         return requests.get(url, timeout=5).json()
 
-    def get_tx_for_region(self, alt_ac: str, alt_aln_method: str, start_i: int, end_i: int) -> List:
+    def get_tx_for_region(self, alt_ac: str, alt_aln_method: str, start_i: int, end_i: int) -> Union[List[dict], None]:
         """
         return transcripts that overlap given region
 
@@ -254,7 +256,7 @@ class UTAREST(Interface):
         )
         return requests.get(url, timeout=5).json()
 
-    def get_tx_mapping_options(self, tx_ac: str) -> dict:
+    def get_tx_mapping_options(self, tx_ac: str) -> Union[List[dict], None]:
         """Return all transcript alignment sets for a given transcript
         accession (tx_ac); returns empty list if transcript does not
         exist.  Use this method to discovery possible mapping options
@@ -274,7 +276,7 @@ class UTAREST(Interface):
         url = ("{serv}/tx_mapping_options/{tx_ac}").format(serv=self.server, tx_ac=tx_ac)
         return requests.get(url, timeout=5).json()
 
-    def get_similar_transcripts(self, tx_ac: str) -> List:
+    def get_similar_transcripts(self, tx_ac: str) -> Union[List[dict], None]:
         """Return a list of transcripts that are similar to the given
         transcript, with relevant similarity criteria.
 
