@@ -1,24 +1,24 @@
-# uta-rest
+# hgvs-dataproviders-rest
 
-Rest interface for [UTA](https://github.com/biocommons/uta).
+Rest interface for [UTA](https://github.com/biocommons/uta) and SeqRepo, which combined make up an hgvs data provider.
 
-The uta database is used by [hgvs](https://github.com/biocommons/hgvs) to perform many of its sequence manipulation functions. The hgvs library includes tools to normalize, validate, and map sequence variants (among other functionalities). In order for hgvs to access transcript info needed for such work, it uses the uta data provider to fetch transcripts via direct PostgreSQL access.
+The uta and seqrepo databases are used by [hgvs](https://github.com/biocommons/hgvs) to perform many of its sequence manipulation functions. The hgvs library includes tools to normalize, validate, and map sequence variants (among other functionalities). In order for hgvs to access info needed for such work, it uses the uta data provider to fetch transcripts and sequences.
 
 This package includes a REST api (restapi.py) for uta that stands between hgvs and PostgreSQL, along with a data provider for hgvs (utarest.py) that acts as its client.
 
 ## Installing the UTA Rest API Locally
 
-Install docker. ***NOTE: Will be under biocommons instead of ccaitlingo later***
+Install docker.
 
-    $ docker pull ccaitlingo/uta-rest:uta-rest
+    $ docker pull biocommons/uta-rest:uta-rest
     $ docker volume create --name=uta-rest
-    $ docker run -p 8000:8000 ccaitlingo/uta-rest:uta-rest
+    $ docker run -p 8000:8000 biocommons/uta-rest:uta-rest
 
 Or without docker:
 
     $ make devready
     $ source venv/bin/activate
-    $ uvicorn uta_restapi.restapi:app
+    $ uvicorn hgvs_dataproviders_rest.restapi:app
 
 ## Using with hgvs
 
@@ -36,15 +36,7 @@ Instead of calling from .uta, you are using .utarest. Both implement the hgvs [d
 
 ## Using with hgvs (2.0+)
 
-The second version of hgvs allows for selecting a data provider from the options contained in the package utaclients. Uta, uta_rest, and cdot are supported. See [utaclients](https://github.com/ccaitlingo/uta-clients) for more info on each dp.
-
-    >>> import hgvs
-    >>> import utaclients
-    >>> hdp = utaclients.uta_rest.connect()
-
-    >>> am = hgvs.assemblymapper.AssemblyMapper(hdp,
-    ...     assembly_name='GRCh37', alt_aln_method='splign',
-    ...     replace_reference=True)
+A second version of hgvs is planned, which allows for selecting a data provider out of several supported options: uta, uta_rest, cdot, and a planned Ensembl interface implementation. See [utaclients](https://github.com/ccaitlingo/uta-clients) for more info on each dp.
 
 ## Developer Installation
 

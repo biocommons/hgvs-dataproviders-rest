@@ -104,18 +104,18 @@ async def acs_for_protein_seq(seq: str) -> List:
         http_404(e)
 
 
-@app.get("/gene_info/{gene}", response_model=Optional[Gene])
-async def gene_info(gene: str):
+@app.get("/gene_info/{gene}")
+async def gene_info(gene: str) -> Union[dict, None]:
     """
     calls get_gene_info from utarest.py
     returns information as a Gene model or None.
     """
-    r = conn.get_gene_info(gene)
-    return r if not r else Gene(hgnc=r[0], maploc=r[1], descr=r[2], summary=r[3], aliases=r[4], added=r[5])
+    gene = conn.get_gene_info(gene)
+    return gene if gene is None else dict(gene)
 
 
-@app.get("/tx_exons/{tx_ac}/{alt_ac}", response_model=List[Transcript_Exon])
-async def tx_exons(tx_ac: str, alt_ac: str, alt_aln_method: str):
+@app.get("/tx_exons/{tx_ac}/{alt_ac}")
+async def tx_exons(tx_ac: str, alt_ac: str, alt_aln_method: str) -> List:
     """
     calls get_tx_exons from utarest.py
     raises an error if no transcript exons are found for the given accessions and alignment method.
@@ -125,90 +125,77 @@ async def tx_exons(tx_ac: str, alt_ac: str, alt_aln_method: str):
         rows = conn.get_tx_exons(tx_ac, alt_ac, alt_aln_method)
         if not rows:
             return rows
-        # Make a list of Transcript_Exon objects
-        tx_exons = []
-        for exon in rows:
-            tx_exons.append(
-                Transcript_Exon(
-                    hgnc=exon[0],
-                    tx_ac=exon[1],
-                    alt_ac=exon[2],
-                    alt_aln_method=exon[3],
-                    alt_strand=exon[4],
-                    ord=exon[5],
-                    tx_start_i=exon[6],
-                    tx_end_i=exon[7],
-                    alt_start_i=exon[8],
-                    alt_end_i=exon[9],
-                    cigar=exon[10],
-                    tx_aseq=exon[11],
-                    alt_aseq=exon[12],
-                    tes_exon_set_id=exon[13],
-                    aes_exon_set_id=exon[14],
-                    tx_exon_id=exon[15],
-                    alt_exon_id=exon[16],
-                    exon_aln_id=exon[17],
-                )
-            )
-        return tx_exons
+        # Convert DictRow to dict to preserve dictionary
+        t_exons = []
+        for r in rows:
+            t_exons.append(dict(r))
+        return t_exons
     except HGVSDataNotAvailableError as e:
         http_404(e)
 
 
 @app.get("/tx_for_gene/{gene}")
-async def tx_for_gene(gene: str) -> List:
+async def tx_for_gene(gene: str) -> Union[List, None]:
     """calls get_tx_for_gene from utarest.py"""
-    tx = conn.get_tx_for_gene(gene)
-    return tx
+    rows = conn.get_tx_for_gene(gene)
+    if not rows:
+        return rows
+    # Convert DictRow to dict to preserve dictionary
+    transcripts = []
+    for r in rows:
+        transcripts.append(dict(r))
+    return transcripts
 
 
 @app.get("/tx_for_region/{alt_ac}")
-async def tx_for_region(alt_ac: str, alt_aln_method: str, start_i: int, end_i: int) -> List:
+async def tx_for_region(alt_ac: str, alt_aln_method: str, start_i: int, end_i: int) -> Union[List, None]:
     """calls get_tx_for_region from utarest.py"""
-    return conn.get_tx_for_region(alt_ac, alt_aln_method, start_i, end_i)
+    rows = conn.get_tx_for_region(alt_ac, alt_aln_method, start_i, end_i)
+    if not rows:
+        return rows
+    # Convert DictRow to dict to preserve dictionary
+    transcripts = []
+    for r in rows:
+        transcripts.append(dict(r))
+    return transcripts
 
 
 @app.get("/alignments_for_region/{alt_ac}", status_code=200)
-async def alignments_for_region(alt_ac, start_i: int, end_i: int, alt_aln_method: Optional[str] = None) -> List:
+async def alignments_for_region(alt_ac: str, start_i: int, end_i: int, alt_aln_method: Optional[str] = None) -> List:
     """calls get_alignments_for_region from utarest.py"""
     return conn.get_alignments_for_region(alt_ac, start_i, end_i, alt_aln_method)
 
 
-@app.get("/tx_identity_info/{tx_ac}", response_model=Transcript)
-async def tx_identity_info(tx_ac: str):
+@app.get("/tx_identity_info/{tx_ac}")
+async def tx_identity_info(tx_ac: str) -> dict:
     """
     calls get_tx_identity_info from utarest.py
     raises an error if the transcript acession is not found in the database.
     otherwise returns information as a Transcript model.
     """
     try:
-        r = conn.get_tx_identity_info(tx_ac)
-        return Transcript(
-            tx_ac=r[0], alt_ac=r[1], alt_aln_method=r[2], cds_start_i=r[3], cds_end_i=r[4], lengths=r[5], hgnc=r[6]
-        )
+        return dict(conn.get_tx_identity_info(tx_ac))
     except HGVSDataNotAvailableError as e:
         http_404(e)
 
 
-@app.get("/tx_info/{tx_ac}/{alt_ac}", response_model=Transcript, response_model_exclude_unset=True)
-async def tx_info(tx_ac: str, alt_ac: str, alt_aln_method: str):
+@app.get("/tx_info/{tx_ac}/{alt_ac}")
+async def tx_info(tx_ac: str, alt_ac: str, alt_aln_method: str) -> dict:
     """
     calls get_tx_info from utarest.py
     raises an error if no transcripts are found for the given accessions and alignment method, or if uta recieves more than one transcript when fetching.
     otherwise returns information as a Transcript model.
     """
     try:
-        r = conn.get_tx_info(tx_ac, alt_ac, alt_aln_method)
-        return Transcript(hgnc=r[0], cds_start_i=r[1], cds_end_i=r[2], tx_ac=r[3], alt_ac=r[4], alt_aln_method=r[5])
-
+        return dict(conn.get_tx_info(tx_ac, alt_ac, alt_aln_method))
     except HGVSDataNotAvailableError as e:
         http_404(e)
     except HGVSError as e:
         http_404(e)
 
 
-@app.get("/tx_mapping_options/{tx_ac}", response_model=List[Alignment_Set])
-async def tx_mapping_options(tx_ac: str):
+@app.get("/tx_mapping_options/{tx_ac}")
+async def tx_mapping_options(tx_ac: str) -> Union[List, None]:
     """
     calls get_tx_mapping_options from utarest.py
     returns information as a list of Alignment_Set models or None.
@@ -216,15 +203,15 @@ async def tx_mapping_options(tx_ac: str):
     rows = conn.get_tx_mapping_options(tx_ac)
     if not rows:
         return rows
-    # Make a list of Alignment_Set objects
-    alignments = []
-    for align in rows:
-        alignments.append(Alignment_Set(tx_ac=align[0], alt_ac=align[1], alt_aln_method=align[2]))
-    return alignments
+    # Convert DictRow to dict to preserve dictionary
+    mapping_options = []
+    for r in rows:
+        mapping_options.append(dict(r))
+    return mapping_options
 
 
-@app.get("/similar_transcripts/{tx_ac}", response_model=List[Similar_Transcript])
-async def similar_transcripts(tx_ac: str):
+@app.get("/similar_transcripts/{tx_ac}")
+async def similar_transcripts(tx_ac: str) -> Union[List, None]:
     """
     calls get_similar_transcripts from utarest.py
     returns information as a list of Similar_Transcript models or None.
@@ -232,20 +219,10 @@ async def similar_transcripts(tx_ac: str):
     rows = conn.get_similar_transcripts(tx_ac)
     if not rows:
         return rows
-    # Make a list of Transcript objects
+    # Convert DictRow to dict to preserve dictionary
     transcripts = []
-    for ts in rows:
-        transcripts.append(
-            Similar_Transcript(
-                tx_ac1=ts[0],
-                tx_ac2=ts[1],
-                hgnc_eq=ts[2],
-                cds_eq=ts[3],
-                es_fp_eq=ts[4],
-                cds_es_fp_eq=ts[5],
-                cds_exon_lengths_fp_eq=ts[6],
-            )
-        )
+    for r in rows:
+        transcripts.append(dict(r))
     return transcripts
 
 
@@ -256,7 +233,7 @@ async def pro_ac_for_tx_ac(tx_ac: str) -> Union[str, None]:
 
 
 @app.get("/assembly_map/{assembly_name}")
-async def assmbly_map(assembly_name: str) -> dict:
+async def assembly_map(assembly_name: str) -> dict:
     """
     calls get_assembly_map from utarest.py
     raises an error if not given an exisiting assembly map name

@@ -14,14 +14,14 @@ interactions:
     uri: http://127.0.0.1:8000/tx_for_gene/VHL
   response:
     body:
-      string: '[["VHL",213,732,"NM_198156.2","AC_000135.1","splign"],["VHL",213,855,"NM_000551.3","AC_000135.1","splign"],["VHL",213,855,"NM_000551.3","NC_000003.11","blat"],["VHL",213,855,"NM_000551.3","NC_000003.11","splign"],["VHL",213,855,"NM_000551.3","NC_000003.12","splign"],["VHL",213,855,"NM_000551.3","NC_018914.2","splign"],["VHL",213,855,"NM_000551.3","NG_008212.3","splign"],["VHL",213,732,"NM_198156.2","NC_000003.11","blat"],["VHL",213,732,"NM_198156.2","NC_000003.11","splign"],["VHL",213,732,"NM_198156.2","NC_000003.12","splign"],["VHL",213,732,"NM_198156.2","NC_018914.2","splign"],["VHL",840,1482,"ENST00000256474","NC_000003.11","genebuild"],["VHL",60,579,"ENST00000345392","NC_000003.11","genebuild"],["VHL",null,null,"ENST00000477538","NC_000003.11","genebuild"],["VHL",213,795,"NM_001354723.1","NC_000003.11","splign"],["VHL",213,795,"NM_001354723.1","NC_000003.12","splign"]]'
+      string: '[{"hgnc":"VHL","cds_start_i":213,"cds_end_i":732,"tx_ac":"NM_198156.2","alt_ac":"AC_000135.1","alt_aln_method":"splign"},{"hgnc":"VHL","cds_start_i":213,"cds_end_i":855,"tx_ac":"NM_000551.3","alt_ac":"AC_000135.1","alt_aln_method":"splign"},{"hgnc":"VHL","cds_start_i":213,"cds_end_i":855,"tx_ac":"NM_000551.3","alt_ac":"NC_000003.11","alt_aln_method":"blat"},{"hgnc":"VHL","cds_start_i":213,"cds_end_i":855,"tx_ac":"NM_000551.3","alt_ac":"NC_000003.11","alt_aln_method":"splign"},{"hgnc":"VHL","cds_start_i":213,"cds_end_i":855,"tx_ac":"NM_000551.3","alt_ac":"NC_000003.12","alt_aln_method":"splign"},{"hgnc":"VHL","cds_start_i":213,"cds_end_i":855,"tx_ac":"NM_000551.3","alt_ac":"NC_018914.2","alt_aln_method":"splign"},{"hgnc":"VHL","cds_start_i":213,"cds_end_i":855,"tx_ac":"NM_000551.3","alt_ac":"NG_008212.3","alt_aln_method":"splign"},{"hgnc":"VHL","cds_start_i":213,"cds_end_i":732,"tx_ac":"NM_198156.2","alt_ac":"NC_000003.11","alt_aln_method":"blat"},{"hgnc":"VHL","cds_start_i":213,"cds_end_i":732,"tx_ac":"NM_198156.2","alt_ac":"NC_000003.11","alt_aln_method":"splign"},{"hgnc":"VHL","cds_start_i":213,"cds_end_i":732,"tx_ac":"NM_198156.2","alt_ac":"NC_000003.12","alt_aln_method":"splign"},{"hgnc":"VHL","cds_start_i":213,"cds_end_i":732,"tx_ac":"NM_198156.2","alt_ac":"NC_018914.2","alt_aln_method":"splign"},{"hgnc":"VHL","cds_start_i":840,"cds_end_i":1482,"tx_ac":"ENST00000256474","alt_ac":"NC_000003.11","alt_aln_method":"genebuild"},{"hgnc":"VHL","cds_start_i":60,"cds_end_i":579,"tx_ac":"ENST00000345392","alt_ac":"NC_000003.11","alt_aln_method":"genebuild"},{"hgnc":"VHL","cds_start_i":null,"cds_end_i":null,"tx_ac":"ENST00000477538","alt_ac":"NC_000003.11","alt_aln_method":"genebuild"},{"hgnc":"VHL","cds_start_i":213,"cds_end_i":795,"tx_ac":"NM_001354723.1","alt_ac":"NC_000003.11","alt_aln_method":"splign"},{"hgnc":"VHL","cds_start_i":213,"cds_end_i":795,"tx_ac":"NM_001354723.1","alt_ac":"NC_000003.12","alt_aln_method":"splign"}]'
     headers:
       content-length:
-      - '885'
+      - '1957'
       content-type:
       - application/json
       date:
-      - Mon, 26 Jun 2023 20:49:37 GMT
+      - Mon, 31 Jul 2023 17:30:40 GMT
       server:
       - uvicorn
     status:

@@ -14,14 +14,15 @@ interactions:
     uri: http://127.0.0.1:8000/tx_exons/NM_199425.2/fake
   response:
     body:
-      string: '{"detail":[{"loc":["query","alt_aln_method"],"msg":"field required","type":"value_error.missing"}]}'
+      string: '{"detail":[{"type":"missing","loc":["query","alt_aln_method"],"msg":"Field
+        required","input":null,"url":"https://errors.pydantic.dev/2.1/v/missing"}]}'
     headers:
       content-length:
-      - '99'
+      - '150'
       content-type:
       - application/json
       date:
-      - Mon, 26 Jun 2023 20:49:37 GMT
+      - Mon, 31 Jul 2023 17:30:40 GMT
       server:
       - uvicorn
     status:

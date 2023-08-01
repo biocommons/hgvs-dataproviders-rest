@@ -21,7 +21,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 26 Jun 2023 21:13:31 GMT
+      - Mon, 31 Jul 2023 17:30:38 GMT
       server:
       - uvicorn
     status:
@@ -42,14 +42,14 @@ interactions:
     uri: http://127.0.0.1:8000/assembly_map/GROUCH
   response:
     body:
-      string: '{"detail":"[Errno 2] No such file or directory: ''/home/caitlin/projects/uta-rest/venv/lib/python3.11/site-packages/bioutils/_data/assemblies/GROUCH.json.gz''"}'
+      string: '{"detail":"[Errno 2] No such file or directory: ''/usr/local/lib/python3.10/dist-packages/bioutils/_data/assemblies/GROUCH.json.gz''"}'
     headers:
       content-length:
-      - '158'
+      - '132'
       content-type:
       - application/json
       date:
-      - Mon, 26 Jun 2023 21:13:31 GMT
+      - Mon, 31 Jul 2023 17:30:38 GMT
       server:
       - uvicorn
     status:
