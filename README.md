@@ -10,9 +10,8 @@ This package includes a REST api (restapi.py) for uta that stands between hgvs a
 
 Install docker.
 
-    $ docker pull biocommons/uta-rest:uta-rest
-    $ docker volume create --name=uta-rest
-    $ docker run -p 8000:8000 biocommons/uta-rest:uta-rest
+    $ docker pull biocommons/hgvs-dataproviders-rest:0.0.2
+    $ docker run -p 8000:8000 biocommons/hgvs-dataproviders-rest:0.0.2
 
 Or without docker:
 
@@ -22,17 +21,17 @@ Or without docker:
 
 ## Using with hgvs
 
-Simply pass the result of utarest's connect() function as an argument into any [hgvs](https://github.com/biocommons/hgvs) tool, e.g. Assembly Mapper.
+Simply pass the result of restclient's connect() function as an argument into any [hgvs](https://github.com/biocommons/hgvs) tool, e.g. Assembly Mapper.
 
 
-    >>> import hgvs_dataproviders_rest
+    >>> from hgvs_dataproviders_rest import restclient
     >>> import hgvs.assemblymapper
-    >>> hdp = hgvs_dataproviders_rest.connect()
+    >>> hdp = restclient.connect()
 
     >>> am = hgvs.assemblymapper.AssemblyMapper(hdp,
     ...     assembly_name='GRCh37', alt_aln_method='splign',
     ...     replace_reference=True)
-Instead of calling connect() from hgvs.dataproviders.uta, you are using .hgvs_dataproviders_rest. Both implement the hgvs [data providers interface](https://github.com/biocommons/hgvs/blob/main/src/hgvs/dataproviders/interface.py).
+Instead of calling connect() from hgvs.dataproviders.uta, you are using hgvs_dataproviders_rest.restclient. Both implement the hgvs [data providers interface](https://github.com/biocommons/hgvs/blob/main/src/hgvs/dataproviders/interface.py).
 
 ## Using with hgvs (2.0+)
 
