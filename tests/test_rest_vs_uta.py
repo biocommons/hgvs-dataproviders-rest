@@ -1,6 +1,5 @@
 import datetime
 import os
-from typing import Dict, List
 
 import hgvs.dataproviders.uta as uta
 import pytest
@@ -9,13 +8,7 @@ from vcr.filters import decode_response
 
 import hgvs_dataproviders_rest.restclient as utarest
 
-os.environ["UTAREST_URL"] = "http://127.0.0.1:8000"  # Used in utarest.connect()
-
-
-def just_values(dictionaries: List[Dict]) -> List[List]:
-    """Like the opposite of dict(), when dict() can't be used.
-    (i.e. to compare just the values of a dictionary against a list of values)"""
-    return [list(dictionary.values()) for dictionary in dictionaries]
+os.environ["HGVS_DATAPROVIDER_REST_URL"] = "http://127.0.0.1:8000"  # Used in restclient.connect()
 
 
 def equal_regardless_of_order(list, other):
