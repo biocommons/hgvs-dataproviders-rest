@@ -1,6 +1,6 @@
-# UTA Rest
-"""implements an hgvs data provider interface using a REST api to UTA
-(https://github.com/biocommons/uta-rest)
+# hgvs dataproviders rest client
+"""implements the hgvs data provider interface as a client for the hgvs dataprovider REST api
+(https://github.com/biocommons/hgvs-dataproviders-rest)
 (https://github.com/biocommons/uta)
 
 """
@@ -54,7 +54,7 @@ class UTAREST(Interface):
 
     def optional_parameters(self, names: list, params: list) -> str:
         """
-        TODO: I think you can actually do this with a params argument in requests.get()
+        TODO: You may actually be able to do this using the params argument in requests.get()
 
         returns a string representation of query parameters that can be appended to a url
         example: optional_parameters(["start_i", "end_i", "align_method"], [0, 1, "splign"]))
