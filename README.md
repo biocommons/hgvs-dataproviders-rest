@@ -4,7 +4,7 @@ Rest interface for [UTA](https://github.com/biocommons/uta) and SeqRepo, which c
 
 The uta and seqrepo databases are used by [hgvs](https://github.com/biocommons/hgvs) to perform many of its sequence manipulation functions. The hgvs library includes tools to normalize, validate, and map sequence variants (among other functionalities). In order for hgvs to access info needed for such work, it uses the uta data provider to fetch transcripts and sequences.
 
-This package includes a REST api (restapi.py) for uta that stands between hgvs and PostgreSQL, along with a data provider for hgvs (utarest.py) that acts as its client.
+This package includes a REST api (restapi.py) for uta that stands between hgvs and uta/seqrepo databases, along with a data provider for hgvs (utarest.py) that acts as its client.
 
 ## Installing the UTA Rest API Locally
 
@@ -18,7 +18,7 @@ Or without docker:
 
     $ make devready
     $ source venv/bin/activate
-    $ uvicorn hgvs_dataproviders_rest.restapi:app
+    $ uvicorn restapi:app
 
 ## Using with hgvs
 
@@ -36,10 +36,10 @@ Instead of calling from .uta, you are using .utarest. Both implement the hgvs [d
 
 ## Using with hgvs (2.0+)
 
-A second version of hgvs is planned, which allows for selecting a data provider out of several supported options: uta, uta_rest, cdot, and a planned Ensembl interface implementation. See [utaclients](https://github.com/ccaitlingo/uta-clients) for more info on each dp.
+A second version of hgvs is planned, which allows for selecting a data provider out of several supported options: uta, uta_rest, cdot, and possibly a future Ensembl interface implementation. See [utaclients](https://github.com/ccaitlingo/uta-clients) for more info on each data provider.
 
 ## Developer Installation
 
     $ make devready
     $ source venv/bin/activate
-    $ uvicorn uta_restapi.restapi:app --reload
+    $ uvicorn restapi:app --reload
