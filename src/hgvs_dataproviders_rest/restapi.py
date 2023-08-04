@@ -25,7 +25,7 @@ async def ping() -> dict:
 @app.get("/seq/{ac}")
 async def seq(ac: str, start_i: Optional[int] = None, end_i: Optional[int] = None) -> str:
     """
-    calls get_seq from utarest.py
+    calls get_seq from uta.py
     raises an error if the accession number is not found in the database.
     """
     try:
@@ -37,7 +37,7 @@ async def seq(ac: str, start_i: Optional[int] = None, end_i: Optional[int] = Non
 @app.get("/acs_for_protein_seq/{seq}")
 async def acs_for_protein_seq(seq: str) -> List:
     """
-    calls get_acs_for_protein_seq from utarest.py
+    calls get_acs_for_protein_seq from uta.py
     raises an error if the sequence is not found in the database.
     """
     try:
@@ -48,7 +48,7 @@ async def acs_for_protein_seq(seq: str) -> List:
 
 @app.get("/gene_info/{gene}")
 async def gene_info(gene: str) -> Union[dict, None]:
-    """calls get_gene_info from utarest.py."""
+    """calls get_gene_info from uta.py."""
     gene = conn.get_gene_info(gene)
     return gene if gene is None else dict(gene)
 
@@ -56,7 +56,7 @@ async def gene_info(gene: str) -> Union[dict, None]:
 @app.get("/tx_exons/{tx_ac}/{alt_ac}")
 async def tx_exons(tx_ac: str, alt_ac: str, alt_aln_method: str) -> List:
     """
-    calls get_tx_exons from utarest.py
+    calls get_tx_exons from uta.py
     raises an error if no transcript exons are found for the given accessions and alignment method.
     otherwise returns information as a list of dictionaries.
     """
@@ -75,7 +75,7 @@ async def tx_exons(tx_ac: str, alt_ac: str, alt_aln_method: str) -> List:
 
 @app.get("/tx_for_gene/{gene}")
 async def tx_for_gene(gene: str) -> Union[List, None]:
-    """calls get_tx_for_gene from utarest.py"""
+    """calls get_tx_for_gene from uta.py"""
     rows = conn.get_tx_for_gene(gene)
     if not rows:
         return rows
@@ -88,7 +88,7 @@ async def tx_for_gene(gene: str) -> Union[List, None]:
 
 @app.get("/tx_for_region/{alt_ac}")
 async def tx_for_region(alt_ac: str, alt_aln_method: str, start_i: int, end_i: int) -> Union[List, None]:
-    """calls get_tx_for_region from utarest.py"""
+    """calls get_tx_for_region from uta.py"""
     rows = conn.get_tx_for_region(alt_ac, alt_aln_method, start_i, end_i)
     if not rows:
         return rows
@@ -101,14 +101,14 @@ async def tx_for_region(alt_ac: str, alt_aln_method: str, start_i: int, end_i: i
 
 @app.get("/alignments_for_region/{alt_ac}", status_code=200)
 async def alignments_for_region(alt_ac: str, start_i: int, end_i: int, alt_aln_method: Optional[str] = None) -> List:
-    """calls get_alignments_for_region from utarest.py"""
+    """calls get_alignments_for_region from uta.py"""
     return conn.get_alignments_for_region(alt_ac, start_i, end_i, alt_aln_method)
 
 
 @app.get("/tx_identity_info/{tx_ac}")
 async def tx_identity_info(tx_ac: str) -> dict:
     """
-    calls get_tx_identity_info from utarest.py
+    calls get_tx_identity_info from uta.py
     raises an error if the transcript acession is not found in the database.
     otherwise returns information as a dictionary.
     """
@@ -121,7 +121,7 @@ async def tx_identity_info(tx_ac: str) -> dict:
 @app.get("/tx_info/{tx_ac}/{alt_ac}")
 async def tx_info(tx_ac: str, alt_ac: str, alt_aln_method: str) -> dict:
     """
-    calls get_tx_info from utarest.py
+    calls get_tx_info from uta.py
     raises an error if no transcripts are found for the given accessions and alignment method, or if uta recieves more than one transcript when fetching.
     otherwise returns information as a dictionary.
     """
@@ -135,7 +135,7 @@ async def tx_info(tx_ac: str, alt_ac: str, alt_aln_method: str) -> dict:
 
 @app.get("/tx_mapping_options/{tx_ac}")
 async def tx_mapping_options(tx_ac: str) -> Union[List, None]:
-    """calls get_tx_mapping_options from utarest.py."""
+    """calls get_tx_mapping_options from uta.py."""
     rows = conn.get_tx_mapping_options(tx_ac)
     if not rows:
         return rows
@@ -148,7 +148,7 @@ async def tx_mapping_options(tx_ac: str) -> Union[List, None]:
 
 @app.get("/similar_transcripts/{tx_ac}")
 async def similar_transcripts(tx_ac: str) -> Union[List, None]:
-    """calls get_similar_transcripts from utarest.py."""
+    """calls get_similar_transcripts from uta.py."""
     rows = conn.get_similar_transcripts(tx_ac)
     if not rows:
         return rows
@@ -161,14 +161,14 @@ async def similar_transcripts(tx_ac: str) -> Union[List, None]:
 
 @app.get("/pro_ac_for_tx_ac/{tx_ac}")
 async def pro_ac_for_tx_ac(tx_ac: str) -> Union[str, None]:
-    """calls get_pro_ac_for_tx_ac from utarest.py"""
+    """calls get_pro_ac_for_tx_ac from uta.py"""
     return conn.get_pro_ac_for_tx_ac(tx_ac)
 
 
 @app.get("/assembly_map/{assembly_name}")
 async def assembly_map(assembly_name: str) -> dict:
     """
-    calls get_assembly_map from utarest.py
+    calls get_assembly_map from uta.py
     raises an error if not given an exisiting assembly map name.
     """
     try:
