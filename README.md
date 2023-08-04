@@ -1,12 +1,12 @@
 # hgvs-dataproviders-rest
 
-Rest interface for [UTA](https://github.com/biocommons/uta) and SeqRepo, which combined make up an hgvs data provider.
+Rest interface for [UTA](https://github.com/biocommons/uta) and [SeqRepo](https://github.com/biocommons/biocommons.seqrepo), which combined make up an hgvs data provider.
 
 The uta and seqrepo databases are used by [hgvs](https://github.com/biocommons/hgvs) to perform many of its sequence manipulation functions. The hgvs library includes tools to normalize, validate, and map sequence variants (among other functionalities). In order for hgvs to access info needed for such work, it uses the uta data provider to fetch transcripts and sequences.
 
-This package includes a REST api (restapi.py) for uta that stands between hgvs and PostgreSQL, along with a data provider for hgvs (utarest.py) that acts as its client.
+This package includes a REST api (restapi.py) for uta that stands between hgvs and uta/seqrepo databases, along with a data provider for hgvs (restclient.py) that acts as its client.
 
-## Installing the UTA Rest API Locally
+## Installing the Rest Interface Locally
 
 Install docker.
 
@@ -18,28 +18,28 @@ Or without docker:
 
     $ make devready
     $ source venv/bin/activate
-    $ uvicorn hgvs_dataproviders_rest.restapi:app
+    $ uvicorn restapi:app
 
 ## Using with hgvs
 
 Simply pass the result of utarest's connect() function as an argument into any [hgvs](https://github.com/biocommons/hgvs) tool, e.g. Assembly Mapper.
 
 
-    >>> import hgvs.dataproviders.utarest
+    >>> import hgvs_dataproviders_rest
     >>> import hgvs.assemblymapper
-    >>> hdp = hgvs.dataproviders.utarest.connect()
+    >>> hdp = hgvs_dataproviders_rest.connect()
 
     >>> am = hgvs.assemblymapper.AssemblyMapper(hdp,
     ...     assembly_name='GRCh37', alt_aln_method='splign',
     ...     replace_reference=True)
-Instead of calling from .uta, you are using .utarest. Both implement the hgvs [data providers interface](https://github.com/biocommons/hgvs/blob/main/src/hgvs/dataproviders/interface.py).
+Instead of calling connect() from hgvs.dataproviders.uta, you are using .hgvs_dataproviders_rest. Both implement the hgvs [data providers interface](https://github.com/biocommons/hgvs/blob/main/src/hgvs/dataproviders/interface.py).
 
 ## Using with hgvs (2.0+)
 
-A second version of hgvs is planned, which allows for selecting a data provider out of several supported options: uta, uta_rest, cdot, and a planned Ensembl interface implementation. See [utaclients](https://github.com/ccaitlingo/uta-clients) for more info on each dp.
+A second version of hgvs is planned, which allows for selecting a data provider out of several supported options: uta, hgvs_dataproviders_rest, cdot, and possibly a future Ensembl interface implementation. See [utaclients](https://github.com/ccaitlingo/uta-clients) for more info on each data provider.
 
 ## Developer Installation
 
     $ make devready
     $ source venv/bin/activate
-    $ uvicorn uta_restapi.restapi:app --reload
+    $ uvicorn restapi:app --reload
