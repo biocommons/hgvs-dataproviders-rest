@@ -54,6 +54,8 @@ class UTAREST(Interface):
 
     def optional_parameters(self, names: list, params: list) -> str:
         """
+        TODO: I think you can actually do this with a params argument in requests.get()
+
         returns a string representation of query parameters that can be appended to a url
         example: optional_parameters(["start_i", "end_i", "align_method"], [0, 1, "splign"]))
         returns: ?start_i=0&end_i=1&align_method=splign
@@ -200,11 +202,6 @@ class UTAREST(Interface):
             serv=self.server, alt_ac=alt_ac, start_i=start_i, end_i=end_i
         )
         self.optional_parameters(["alt_aln_method"], [alt_aln_method])
-        """
-        Technically fewer lines of execution
-        if not alt_aln_method == None:
-            url += ("alt_aln_method={alt_aln_method}").format(alt_aln_method=alt_aln_method)
-        """
         return requests.get(url, timeout=5).json()
 
     def get_tx_identity_info(self, tx_ac: str) -> dict:
