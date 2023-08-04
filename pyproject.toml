@@ -1,5 +1,5 @@
 [project]
-name = "hgvs.dataproviders.rest"
+name = "hgvs_dataproviders_rest"
 authors = [
   { name="Reece Hart", email="reece@myome.com" },
   { name="Caitlin Gong", email="caitlin.gong@myome.com" }
@@ -19,8 +19,8 @@ classifiers = [
 dynamic = ["version"]
 
 [project.urls]
-"Homepage" = "https://github.com/biocommons/hgvs.dataproviders.rest"
-"Bug Tracker" = "https://github.com/biocommons/hgvs.dataproviders.rest/issues"
+"Homepage" = "https://github.com/biocommons/hgvs-dataproviders-rest"
+"Bug Tracker" = "https://github.com/biocommons/hgvs-dataproviders-rest/issues"
 
 
 [build-system]
