@@ -1,5 +1,5 @@
 # hgvs dataproviders rest client
-"""implements the hgvs data provider interface as a client for the hgvs dataprovider REST api
+"""implements the hgvs data provider interface. Client of the hgvs dataprovider REST api
 (https://github.com/biocommons/hgvs-dataproviders-rest)
 (https://github.com/biocommons/uta)
 
@@ -14,8 +14,8 @@ from hgvs.dataproviders.seqfetcher import SeqFetcher
 
 
 def connect():
-    # Eventually replace this fake default url :)
-    url = os.environ.get("UTAREST_URL", "https://api.biocommons.org/utarest/0")
+    # Eventually replace the default url to point to a biocommons-hosted instance
+    url = os.environ.get("HGVS_DATAPROVIDER_REST_URL", "http://localhost:8000/")
     return UTAREST(url)
 
 
