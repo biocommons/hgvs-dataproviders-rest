@@ -7,7 +7,7 @@ import pytest
 import yaml
 from vcr.filters import decode_response
 
-import src.uta_restapi.utarest as utarest
+import hgvs_dataproviders_rest.restclient as utarest
 
 os.environ["UTAREST_URL"] = "http://127.0.0.1:8000"  # Used in utarest.connect()
 

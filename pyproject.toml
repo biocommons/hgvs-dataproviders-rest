@@ -1,10 +1,10 @@
 [project]
-name = "biocommons.uta_rest"
+name = "hgvs_dataproviders_rest"
 authors = [
   { name="Reece Hart", email="reece@myome.com" },
   { name="Caitlin Gong", email="caitlin.gong@myome.com" }
 ]
-description = "REST Interface for UTA"
+description = "hgvs dataproviders based on UTA and SeqRepo REST Interfaces"
 readme = "README.md"
 #license = { file=LISCENSE }
 requires-python = ">=3.8"
@@ -19,8 +19,8 @@ classifiers = [
 dynamic = ["version"]
 
 [project.urls]
-"Homepage" = "https://github.com/biocommons/uta-rest"
-"Bug Tracker" = "https://github.com/biocommons/uta-rest/issues"
+"Homepage" = "https://github.com/biocommons/hgvs-dataproviders-rest"
+"Bug Tracker" = "https://github.com/biocommons/hgvs-dataproviders-rest/issues"
 
 
 [build-system]
