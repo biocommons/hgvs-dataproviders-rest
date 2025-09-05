@@ -1,4 +1,4 @@
-fastapi
-pydantic
-uvicorn
-hgvs
+biocommons
+requests
+intervaltree # cdot local
+lazy # cdot

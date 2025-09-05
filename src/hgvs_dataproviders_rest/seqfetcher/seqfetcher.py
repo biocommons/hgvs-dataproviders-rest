@@ -1,0 +1,68 @@
+# -*- coding: utf-8 -*-
+"""provides sequencing fetching from NCBI and Ensembl
+
+"""
+
+import logging
+import os
+from typing import Optional
+
+import bioutils.seqfetcher
+
+from .seqfetcher_interface import SeqFetcherInterface
+from .. import HGVSDataNotAvailableError
+
+_logger = logging.getLogger(__name__)
+
+
+class SeqFetcher(SeqFetcherInterface):
+    """This class is intended primarily as a mixin for HGVS data providers
+    that doen't otherwise have access to sequence data.  It uses the
+    fetch_seq() function in this module to fetch sequences from
+    several sources; see that function for details.
+
+    >> sf = SeqFetcher()
+
+    >> sf.fetch_seq('NP_056374.2',0,10)
+    'MESRETLSSS'
+
+    """
+
+    def __init__(self):
+        # If HGVS_SEQREPO_DIR is defined, we use seqrepo for *all* sequences.
+        # If HGVS_SEQREPO_URL is defined, use instance of seqrepo-rest-service for *all* sequences.
+        #   (see https://github.com/biocommons/seqrepo-rest-service for more info)
+        # Otherwise, we fall back to remote sequence fetching
+        seqrepo_dir = os.environ.get("HGVS_SEQREPO_DIR")
+        seqrepo_url = os.environ.get("HGVS_SEQREPO_URL")
+        if seqrepo_dir:
+            from biocommons.seqrepo import SeqRepo
+
+            self.sr = SeqRepo(seqrepo_dir)
+
+            def _fetch_seq_seqrepo(ac, start_i=None, end_i=None):
+                return self.sr.fetch(ac, start_i, end_i)
+
+            self.fetcher = _fetch_seq_seqrepo
+            self.source = "SeqRepo ({})".format(seqrepo_dir)
+        elif seqrepo_url:
+            from biocommons.seqrepo.dataproxy import SeqRepoRESTDataProxy
+
+            self.sr = SeqRepoRESTDataProxy(seqrepo_url)
+            self.fetcher = lambda ac, start_i=None, end_i=None: self.sr.get_sequence(
+                ac, start_i, end_i
+            )
+            self.source = f"SeqRepo REST ({seqrepo_url})"
+        else:
+            self.sr = None
+            self.fetcher = bioutils.seqfetcher.fetch_seq
+            self.source = "bioutils.seqfetcher (network fetching)"
+        _logger.info("Fetching sequences with " + self.source)
+
+    def fetch_seq(self, ac: str, start_i: Optional[int] = None, end_i: Optional[int] = None) -> str:
+        try:
+            return self.fetcher(ac, start_i, end_i)
+        except Exception as ex:
+            raise HGVSDataNotAvailableError(
+                "Failed to fetch {ac} from {self.source} ({ex})".format(ac=ac, ex=ex, self=self)
+            )
