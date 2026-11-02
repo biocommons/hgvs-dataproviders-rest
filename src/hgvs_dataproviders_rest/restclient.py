@@ -6,7 +6,7 @@
 """
 
 import os
-from typing import List, Optional, Union
+from urllib.parse import urlencode
 
 import requests
 from hgvs.dataproviders.interface import Interface
@@ -26,18 +26,12 @@ class UTAREST(Interface):
         self.server = server_url
         self.seqfetcher = SeqFetcher()
         self.pingresponse = requests.get(server_url + "/ping", timeout=5).json()
-        super(UTAREST, self).__init__(mode, cache)
+        super().__init__(mode, cache)
 
     def __str__(self):
         return (
-            "{n} <data_version:{dv}; schema_version:{sv}; application_name={self.application_name};"
-            " url={self.url}; sequences-from={sf}>"
-        ).format(
-            n=type(self).__name__,
-            self=self,
-            dv=self.data_version(),
-            sv=self.schema_version(),
-            sf=self.sequence_source(),
+            f"{type(self).__name__} <data_version:{self.data_version()}; schema_version:{self.schema_version()}; application_name={self.application_name};"
+            f" url={self.url}; sequences-from={self.sequence_source()}>"
         )
 
     ############################################################################
@@ -60,38 +54,33 @@ class UTAREST(Interface):
         example: optional_parameters(["start_i", "end_i", "align_method"], [0, 1, "splign"]))
         returns: ?start_i=0&end_i=1&align_method=splign
         """
-        if not len(names) == len(params):
-            raise Exception("Ensure there is a matching value for each parameter name.")
-        retval = "?"
-        params_added = False
-        for (param, name) in zip(params, names):
-            if param:
-                if params_added:
-                    retval += "&"
-                retval += ("{name}={param}").format(name=name, param=param)
-                params_added = True
-        return retval
+        if len(names) != len(params):
+            raise ValueError
+        query = urlencode([
+            (name, param) for name, param in zip(names, params, strict=True) if param is not None
+        ])
+        return "?" + query if query else ""
 
-    def get_seq(self, ac: str, start_i: Optional[int] = None, end_i: Optional[int] = None) -> str:
+    def get_seq(self, ac: str, start_i: int | None = None, end_i: int | None = None) -> str:
         """
         returns a sequence for a given accession.
         can return a portion of a sequence when start and end indices are specified.
         """
-        url = ("{serv}/seq/{ac}").format(serv=self.server, ac=ac)
+        url = f"{self.server}/seq/{ac}"
         url += self.optional_parameters(["start_i", "end_i"], [start_i, end_i])
         return requests.get(url, timeout=120).json()
 
-    def get_acs_for_protein_seq(self, seq: str) -> List:
+    def get_acs_for_protein_seq(self, seq: str) -> list:
         """
         returns a list of protein accessions for a given sequence.  The
         list is guaranteed to contain at least one element with the
         MD5-based accession (MD5_01234abc...def56789) at the end of the
         list.
         """
-        url = ("{serv}/acs_for_protein_seq/{seq}").format(serv=self.server, seq=seq)
+        url = f"{self.server}/acs_for_protein_seq/{seq}"
         return requests.get(url, timeout=5).json()
 
-    def get_gene_info(self, gene: str) -> Union[dict, None]:
+    def get_gene_info(self, gene: str) -> dict | None:
         """
         returns basic information about the gene.
 
@@ -109,10 +98,10 @@ class UTAREST(Interface):
         }
 
         """
-        url = ("{serv}/gene_info/{gene}").format(serv=self.server, gene=gene)
+        url = f"{self.server}/gene_info/{gene}"
         return requests.get(url, timeout=5).json()
 
-    def get_tx_exons(self, tx_ac: str, alt_ac: str, alt_aln_method: str) -> List[dict]:
+    def get_tx_exons(self, tx_ac: str, alt_ac: str, alt_aln_method: str) -> list[dict]:
         """
         return transcript exon info for supplied accession (tx_ac, alt_ac, alt_aln_method), or None if not found
 
@@ -158,22 +147,22 @@ class UTAREST(Interface):
         'NM_199425.2'
 
         """
-        url = ("{serv}/tx_exons/{tx_ac}/{alt_ac}?alt_aln_method={alt_aln_method}").format(
-            serv=self.server, tx_ac=tx_ac, alt_ac=alt_ac, alt_aln_method=alt_aln_method
-        )
+        url = f"{self.server}/tx_exons/{tx_ac}/{alt_ac}?alt_aln_method={alt_aln_method}"
         return requests.get(url, timeout=5).json()
 
-    def get_tx_for_gene(self, gene: str) -> Union[List[dict], None]:
+    def get_tx_for_gene(self, gene: str) -> list[dict] | None:
         """
         return transcript info records for supplied gene, in order of decreasing length
 
         :param gene: HGNC gene name
         :type gene: str
         """
-        url = ("{serv}/tx_for_gene/{gene}").format(serv=self.server, gene=gene)
+        url = f"{self.server}/tx_for_gene/{gene}"
         return requests.get(url, timeout=5).json()
 
-    def get_tx_for_region(self, alt_ac: str, alt_aln_method: str, start_i: int, end_i: int) -> Union[List[dict], None]:
+    def get_tx_for_region(
+        self, alt_ac: str, alt_aln_method: str, start_i: int, end_i: int
+    ) -> list[dict] | None:
         """
         return transcripts that overlap given region
 
@@ -182,14 +171,12 @@ class UTAREST(Interface):
         :param int start_i: 5' bound of region
         :param int end_i: 3' bound of region
         """
-        url = ("{serv}/tx_for_region/{alt_ac}?alt_aln_method={alt_aln_method}&start_i={start_i}&end_i={end_i}").format(
-            serv=self.server, alt_ac=alt_ac, alt_aln_method=alt_aln_method, start_i=start_i, end_i=end_i
-        )
+        url = f"{self.server}/tx_for_region/{alt_ac}?alt_aln_method={alt_aln_method}&start_i={start_i}&end_i={end_i}"
         return requests.get(url, timeout=5).json()
 
     def get_alignments_for_region(
-        self, alt_ac: str, start_i: int, end_i: int, alt_aln_method: Optional[str] = None
-    ) -> List:
+        self, alt_ac: str, start_i: int, end_i: int, alt_aln_method: str | None = None
+    ) -> list:
         """
         return transcripts that overlap given region
 
@@ -198,10 +185,10 @@ class UTAREST(Interface):
         :param int end_i: 3' bound of region
         :param str alt_aln_method: OPTIONAL alignment method (e.g., splign)
         """
-        url = ("{serv}/alignments_for_region/{alt_ac}?start_i={start_i}&end_i={end_i}").format(
-            serv=self.server, alt_ac=alt_ac, start_i=start_i, end_i=end_i
+        url = f"{self.server}/alignments_for_region/{alt_ac}"
+        url += self.optional_parameters(
+            ["start_i", "end_i", "alt_aln_method"], [start_i, end_i, alt_aln_method]
         )
-        self.optional_parameters(["alt_aln_method"], [alt_aln_method])
         return requests.get(url, timeout=5).json()
 
     def get_tx_identity_info(self, tx_ac: str) -> dict:
@@ -222,7 +209,7 @@ class UTAREST(Interface):
         }
 
         """
-        url = ("{serv}/tx_identity_info/{tx_ac}").format(serv=self.server, tx_ac=tx_ac)
+        url = f"{self.server}/tx_identity_info/{tx_ac}"
         return requests.get(url, timeout=5).json()
 
     def get_tx_info(self, tx_ac: str, alt_ac: str, alt_aln_method: str) -> dict:
@@ -248,12 +235,10 @@ class UTAREST(Interface):
         }
 
         """
-        url = ("{serv}/tx_info/{tx_ac}/{alt_ac}?alt_aln_method={alt_aln_method}").format(
-            serv=self.server, tx_ac=tx_ac, alt_ac=alt_ac, alt_aln_method=alt_aln_method
-        )
+        url = f"{self.server}/tx_info/{tx_ac}/{alt_ac}?alt_aln_method={alt_aln_method}"
         return requests.get(url, timeout=5).json()
 
-    def get_tx_mapping_options(self, tx_ac: str) -> Union[List[dict], None]:
+    def get_tx_mapping_options(self, tx_ac: str) -> list[dict] | None:
         """Return all transcript alignment sets for a given transcript
         accession (tx_ac); returns empty list if transcript does not
         exist.  Use this method to discovery possible mapping options
@@ -270,10 +255,10 @@ class UTAREST(Interface):
         }
 
         """
-        url = ("{serv}/tx_mapping_options/{tx_ac}").format(serv=self.server, tx_ac=tx_ac)
+        url = f"{self.server}/tx_mapping_options/{tx_ac}"
         return requests.get(url, timeout=5).json()
 
-    def get_similar_transcripts(self, tx_ac: str) -> Union[List[dict], None]:
+    def get_similar_transcripts(self, tx_ac: str) -> list[dict] | None:
         """Return a list of transcripts that are similar to the given
         transcript, with relevant similarity criteria.
 
@@ -313,16 +298,16 @@ class UTAREST(Interface):
         sequence.
 
         """
-        url = ("{serv}/similar_transcripts/{tx_ac}").format(serv=self.server, tx_ac=tx_ac)
-        return requests.get(url, timeout=5).json()
+        url = f"{self.server}/similar_transcripts/{tx_ac}"
+        return requests.get(url, timeout=120).json()
 
-    def get_pro_ac_for_tx_ac(self, tx_ac: str) -> Union[str, None]:
+    def get_pro_ac_for_tx_ac(self, tx_ac: str) -> str | None:
         """Return the (single) associated protein accession for a given transcript
         accession, or None if not found."""
-        url = ("{serv}/pro_ac_for_tx_ac/{tx_ac}").format(serv=self.server, tx_ac=tx_ac)
+        url = f"{self.server}/pro_ac_for_tx_ac/{tx_ac}"
         return requests.get(url, timeout=5).json()
 
     def get_assembly_map(self, assembly_name: str) -> dict:
         """Return a list of accessions for the specified assembly name (e.g., GRCh38.p5)."""
-        url = ("{serv}/assembly_map/{assembly_name}").format(serv=self.server, assembly_name=assembly_name)
+        url = f"{self.server}/assembly_map/{assembly_name}"
         return requests.get(url, timeout=5).json()

@@ -97,7 +97,9 @@ def test_codes_tx_exons_e_params():
 def test_codes_tx_exons_ne_params():
     """Nonexisting seq with missing param"""
     url = base + "/tx_exons/NM_199425.2/fake"
-    assert requests.get(url).status_code == 422  # All 422s check for params before checking if region exists
+    assert (
+        requests.get(url).status_code == 422
+    )  # All 422s check for params before checking if region exists
 
 
 @pytest.mark.vcr

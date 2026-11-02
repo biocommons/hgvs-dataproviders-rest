@@ -5,23 +5,23 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       Connection:
       - keep-alive
       User-Agent:
-      - python-requests/2.31.0
+      - python-requests/2.34.2
     method: GET
     uri: http://127.0.0.1:8000/ping
   response:
     body:
-      string: '{"data_version":"uta_20180821","schema_version":"1.1","sequence_source":"seqfetcher"}'
+      string: '{"data_version":"uta_20210129b","schema_version":"1.1","sequence_source":"seqfetcher"}'
     headers:
       content-length:
-      - '85'
+      - '86'
       content-type:
       - application/json
       date:
-      - Mon, 31 Jul 2023 17:30:39 GMT
+      - Mon, 02 Nov 2026 19:59:49 GMT
       server:
       - uvicorn
     status:
