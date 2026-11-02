@@ -7,6 +7,7 @@
 
 import os
 from typing import List, Optional, Union
+from urllib.parse import urlencode
 
 import requests
 from hgvs.dataproviders.interface import Interface
@@ -60,17 +61,10 @@ class UTAREST(Interface):
         example: optional_parameters(["start_i", "end_i", "align_method"], [0, 1, "splign"]))
         returns: ?start_i=0&end_i=1&align_method=splign
         """
-        if not len(names) == len(params):
+        if len(names) != len(params):
             raise Exception("Ensure there is a matching value for each parameter name.")
-        retval = "?"
-        params_added = False
-        for (param, name) in zip(params, names):
-            if param:
-                if params_added:
-                    retval += "&"
-                retval += ("{name}={param}").format(name=name, param=param)
-                params_added = True
-        return retval
+        query = urlencode([(name, param) for name, param in zip(names, params) if param is not None])
+        return "?" + query if query else ""
 
     def get_seq(self, ac: str, start_i: Optional[int] = None, end_i: Optional[int] = None) -> str:
         """
@@ -198,10 +192,8 @@ class UTAREST(Interface):
         :param int end_i: 3' bound of region
         :param str alt_aln_method: OPTIONAL alignment method (e.g., splign)
         """
-        url = ("{serv}/alignments_for_region/{alt_ac}?start_i={start_i}&end_i={end_i}").format(
-            serv=self.server, alt_ac=alt_ac, start_i=start_i, end_i=end_i
-        )
-        self.optional_parameters(["alt_aln_method"], [alt_aln_method])
+        url = ("{serv}/alignments_for_region/{alt_ac}").format(serv=self.server, alt_ac=alt_ac)
+        url += self.optional_parameters(["start_i", "end_i", "alt_aln_method"], [start_i, end_i, alt_aln_method])
         return requests.get(url, timeout=5).json()
 
     def get_tx_identity_info(self, tx_ac: str) -> dict:

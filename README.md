@@ -10,15 +10,14 @@ This package includes a REST api (restapi.py) for uta that stands between hgvs a
 
 Install docker.
 
-    $ docker pull biocommons/uta-rest:uta-rest
-    $ docker volume create --name=uta-rest
-    $ docker run -p 8000:8000 biocommons/uta-rest:uta-rest
+    $ docker build -t hgvs-dataproviders-rest .
+    $ docker run --rm -p 8000:8000 hgvs-dataproviders-rest
 
 Or without docker:
 
     $ make devready
     $ source venv/bin/activate
-    $ uvicorn restapi:app
+    $ uvicorn hgvs_dataproviders_rest.restapi:app
 
 ## Using with hgvs
 
@@ -34,6 +33,10 @@ Simply pass the result of utarest's connect() function as an argument into any [
     ...     replace_reference=True)
 Instead of calling connect() from hgvs.dataproviders.uta, you are using .hgvs_dataproviders_rest. Both implement the hgvs [data providers interface](https://github.com/biocommons/hgvs/blob/main/src/hgvs/dataproviders/interface.py).
 
+By default, `connect()` uses the hosted REST service. To use a local service, set `UTAREST_URL` before connecting, for example:
+
+    $ export UTAREST_URL=http://localhost:8000
+
 ## Using with hgvs (2.0+)
 
 A second version of hgvs is planned, which allows for selecting a data provider out of several supported options: uta, hgvs_dataproviders_rest, cdot, and possibly a future Ensembl interface implementation. See [utaclients](https://github.com/ccaitlingo/uta-clients) for more info on each data provider.
@@ -42,4 +45,4 @@ A second version of hgvs is planned, which allows for selecting a data provider 
 
     $ make devready
     $ source venv/bin/activate
-    $ uvicorn restapi:app --reload
+    $ uvicorn hgvs_dataproviders_rest.restapi:app --reload

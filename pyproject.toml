@@ -17,6 +17,37 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dynamic = ["version"]
+dependencies = [
+    "coloredlogs~=15.0",
+    "fastapi",
+    "hgvs",
+    "pydantic",
+    "pyyaml~=6.0",
+    "requests",
+    "uvicorn",
+]
+
+[project.optional-dependencies]
+dev = [
+    "bandit~=1.7",
+    "black~=22.3",
+    "build~=0.8",
+    "flake8~=4.0",
+    "ipython~=8.4",
+    "isort~=5.10",
+    "mypy",
+    "pylint~=2.14",
+    "pre-commit",
+]
+test = [
+    "pytest~=7.1",
+    "pytest-cov~=4.0",
+    "pytest-optional-tests",
+    "tox~=3.25",
+    "vcrpy",
+    "pytest-vcr",
+]
+docs = ["mkdocs"]
 
 [project.urls]
 "Homepage" = "https://github.com/biocommons/hgvs-dataproviders-rest"
@@ -52,7 +83,7 @@ markers = [
 
 [tool.coverage.run]
 branch = true
-source = ["biocommons.uta-rest"]
+source = ["hgvs_dataproviders_rest"]
 omit = ["*_test.py", "*/tests/*"]
 
 
