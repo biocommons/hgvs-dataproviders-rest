@@ -1,7 +1,0 @@
-fastapi
-pydantic
-uvicorn
-hgvs
-coloredlogs~=15.0
-pyyaml~=6.0
-requests

@@ -16,8 +16,7 @@ Install docker.
 Or without docker:
 
     $ make devready
-    $ source venv/bin/activate
-    $ uvicorn hgvs_dataproviders_rest.restapi:app
+    $ uv run uvicorn hgvs_dataproviders_rest.restapi:app
 
 ## Using with hgvs
 
@@ -44,5 +43,4 @@ A second version of hgvs is planned, which allows for selecting a data provider 
 ## Developer Installation
 
     $ make devready
-    $ source venv/bin/activate
-    $ uvicorn hgvs_dataproviders_rest.restapi:app --reload
+    $ uv run uvicorn hgvs_dataproviders_rest.restapi:app --reload

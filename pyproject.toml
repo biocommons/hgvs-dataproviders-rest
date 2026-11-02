@@ -6,68 +6,88 @@ authors = [
 ]
 description = "hgvs dataproviders based on UTA and SeqRepo REST Interfaces"
 readme = "README.md"
-#license = { file=LISCENSE }
-requires-python = ">=3.8"
+license = "Apache-2.0"
+license-files = ["LICENSE.txt"]
+requires-python = ">=3.11"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "Operating System :: OS Independent",
 ]
 dynamic = ["version"]
 dependencies = [
-    "coloredlogs~=15.0",
-    "fastapi",
-    "hgvs",
-    "pydantic",
-    "pyyaml~=6.0",
+    "hgvs>=1.5.7",
     "requests",
-    "uvicorn",
 ]
 
 [project.optional-dependencies]
+server = ["fastapi", "uvicorn"]
+
+[dependency-groups]
 dev = [
-    "bandit~=1.7",
-    "black~=22.3",
-    "build~=0.8",
-    "flake8~=4.0",
-    "ipython~=8.4",
-    "isort~=5.10",
-    "mypy",
-    "pylint~=2.14",
-    "pre-commit",
+    "deptry>=0.25.1",
+    "mypy>=2.4.0",
+    "nox>=2026.10.20",
+    "prek>=0.5.7",
+    "ruff>=0.17.3",
+    "toml-sort>=0.25.0",
+    "uv-bump>=0.6.0",
+    "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
+    "pytest-recording>=0.14.0",
+    "vcrpy>=9.2.0",
+    "mkdocs>=1.6.1",
+    "mkdocs-awesome-nav>=3.3.0",
+    "mkdocs-material>=9.8.0",
+    "mkdocstrings[python]>=1.0.8",
+    "ipython>=8.4,<9",
+    "jupyter>=1.1.1",
+    "fastapi",
+    "pyyaml~=6.0",
 ]
 test = [
-    "pytest~=7.1",
-    "pytest-cov~=4.0",
-    "pytest-optional-tests",
-    "tox~=3.25",
-    "vcrpy",
-    "pytest-vcr",
+    "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
+    "pytest-recording>=0.14.0",
+    "vcrpy>=9.2.0",
+    "pyyaml~=6.0",
 ]
-docs = ["mkdocs"]
+docs = [
+    "mkdocs>=1.6.1",
+    "mkdocs-awesome-nav>=3.3.0",
+    "mkdocs-material>=9.8.0",
+    "mkdocstrings[python]>=1.0.8",
+]
 
 [project.urls]
 "Homepage" = "https://github.com/biocommons/hgvs-dataproviders-rest"
 "Bug Tracker" = "https://github.com/biocommons/hgvs-dataproviders-rest/issues"
 
-
 [build-system]
-requires = [
-	 "setuptools >= 65.3",
-   	 "setuptools_scm[toml] ~= 7.0"
-	 ]
+requires = ["setuptools >= 80.0", "setuptools_scm[toml] >= 9.0"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+include-package-data = true
+package-dir = {"" = "src"}
+zip-safe = true
+
+[tool.setuptools.packages.find]
+exclude = ["*.pyc", "__pycache__"]
+namespaces = true
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["*.gz", "*.json", "*.yaml"]
 
 [tool.setuptools_scm]
 
-
-# https://docs.pytest.org/en/6.2.x/customize.html#pyproject-toml
 [tool.pytest.ini_options]
-addopts = "-s -v -x --strict-markers -m 'not extra' --doctest-modules"
+addopts = "--doctest-modules -m 'not network'"
 doctest_optionflags = [
     "ALLOW_BYTES",
     "ALLOW_UNICODE",
@@ -76,47 +96,60 @@ doctest_optionflags = [
     "NORMALIZE_WHITESPACE",
 ]
 markers = [
-	"network: tests that require network connectivity",
-	"slow: slow tests that should be run infrequently",
+    "extra: optional tests; deselect with -m 'not extra'",
+    "network: tests that require network connectivity",
+    "slow: slow tests that should be run infrequently",
 ]
-
+strict_markers = true
+testpaths = ["src", "tests"]
 
 [tool.coverage.run]
 branch = true
-source = ["hgvs_dataproviders_rest"]
-omit = ["*_test.py", "*/tests/*"]
-
+source = ["src"]
+omit = ["*_test.py", "*/test/*", "*/tests/*"]
 
 [tool.coverage.report]
 show_missing = true
+skip_empty = true
 exclude_lines = [
-    # Have to re-enable the standard pragma
     "pragma: no cover",
-
-    # Don't complain about missing debug-only code:
     "def __repr__",
     "if self.debug",
-
-    # Don't complain if tests don't hit defensive assertion code:
     "raise AssertionError",
     "raise NotImplementedError",
-
-    # Don't complain if non-runnable code isn't run:
     "if __name__ == .__main__.:",
 ]
 
-[tool.black]
-line-length = 120
+[tool.deptry]
 
+[tool.deptry.package_module_name_map]
+fastapi = "fastapi"
+hgvs = "hgvs"
+pytest = "pytest"
+pytest-cov = "pytest_cov"
+pytest-recording = "pytest_recording"
+pydantic = "pydantic"
+requests = "requests"
+ruff = "ruff"
+uvicorn = "uvicorn"
 
-# [tool.flake8]
-# flake8 does not support configuration in pyproject.toml
-# https://github.com/PyCQA/flake8/issues/234#issuecomment-812800832
-# The config in setup.cfg
+[tool.deptry.per_rule_ignores]
+DEP002 = ["uvicorn"]
 
-[tool.pylint.'MESSAGES CONTROL']
-disable = "R0913"
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+target-version = "py311"
 
+[tool.ruff.format]
+docstring-code-format = true
+preview = true
+quote-style = "double"
 
-[tool.pylint.format]
-max-line-length = "120"
+[tool.ruff.lint]
+ignore = ["E111", "E114", "E117", "E501", "E731", "N801", "N802", "PLR0913", "RET504", "S321", "W191"]
+select = ["A", "ARG", "B", "C4", "DTZ", "E", "EM", "F", "G", "I", "LOG", "N", "PERF", "PIE", "PL", "PT", "PTH", "RET", "RSE", "RUF", "S", "SIM", "TRY", "UP", "W", "YTT"]
+
+[tool.ruff.lint.extend-per-file-ignores]
+"tests/**/*.py" = ["PLR2004", "S101"]
+"tests/test_restapi.py" = ["S113"]

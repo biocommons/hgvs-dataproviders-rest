@@ -21,3 +21,16 @@ def test_get_alignments_for_region_passes_alignment_method(monkeypatch):
         "http://example.test/alignments_for_region/NC_000007.13?start_i=0&end_i=50&alt_aln_method=splign",
         timeout=5,
     )
+
+
+def test_get_similar_transcripts_allows_slow_response(monkeypatch):
+    client = UTAREST.__new__(UTAREST)
+    client.server = "http://example.test"
+    response = Mock()
+    response.json.return_value = []
+    get = Mock(return_value=response)
+    monkeypatch.setattr("hgvs_dataproviders_rest.restclient.requests.get", get)
+
+    assert client.get_similar_transcripts("NM_000051.3") == []
+
+    get.assert_called_once_with("http://example.test/similar_transcripts/NM_000051.3", timeout=120)

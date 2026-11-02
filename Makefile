@@ -9,146 +9,94 @@ SHELL:=/bin/bash -e -o pipefail
 SELF:=$(firstword $(MAKEFILE_LIST))
 
 PY_VERSION:=3
-VE_DIR=venv/${PY_VERSION}
 
-TEST_DIRS:=tests
-DOC_TESTS:=src ./README.md
-
+.DEFAULT_GOAL := help
 
 ############################################################################
 #= BASIC USAGE
-default: help
 
-#=> help -- display this help message
-help:
-	@sbin/makefile-extract-documentation "${SELF}"
-
+.PHONY: help
+help: ## Display help message
+	@./sbin/makefile-extract-documentation $(MAKEFILE_LIST)
 
 ############################################################################
 #= SETUP, INSTALLATION, PACKAGING
 
-#=> devready: create venv, install prerequisites, install pkg in develop mode
-.PHONY: devready
-devready:
-	make ${VE_DIR} && source ${VE_DIR}/bin/activate && make develop
-	@echo '#################################################################################'
-	@echo '###  Do not forget to `source ${VE_DIR}/bin/activate` to use this environment  ###'
-	@echo '#################################################################################'
+.PHONY: install devready
+install: devready
+devready: ## Prepare the development environment and install Git hooks
+	uv sync --dev --extra server
+	uv run prek install -f
+	@echo 'Activate the environment with: source .venv/bin/activate'
 
-#=> venv: make a Python 3 virtual environment
-venv: ${VE_DIR}
-${VE_DIR}: venv/%:
-	python$* -mvenv $@; \
-	source $@/bin/activate; \
-	python -m ensurepip --upgrade; \
-	pip install --upgrade pip setuptools wheel
+.PHONY: build publish
+build: ## Build the source distribution and wheel
+	uv build
 
-#=> develop: install package in develop mode
-.PHONY: develop install
-develop:
-	@if [ -z "$${VIRTUAL_ENV}" ]; then echo "Not in a virtual environment; see README.md" 1>&2; exit 1; fi
-	pip install -e .[dev,test]
-
-#=> install: install package
-install:
-	pip install .
-
-#=> build: make sdist and wheel
-.PHONY: build
-build: %:
-	python -m build
-
+publish: build ## Publish distributions to PyPI (requires trusted publishing or UV_PUBLISH_TOKEN)
+	uv publish
 
 ############################################################################
-#= TESTING
-# see test configuration in setup.cfg
+#= FORMATTING, TESTING, AND CODE QUALITY
 
-#=> cqa: execute code quality tests
-cqa:
-	flake8 src --count --select=E9,F63,F7,F82 --show-source --statistics
-	isort --profile black --check src
-	black --check src
-	bandit -ll -r src
+.PHONY: cqa test test-network test-coverage test-matrix
+cqa: ## Check the lockfile, run hooks, and validate dependencies
+	uv lock --locked
+	uv run prek run --all-files
+	uv run deptry src
 
-#=> test: execute tests
-#=> test-code: test code (including embedded doctests)
-#=> test-docs: test example code in docs
-.PHONY: test test-code test-docs
-test:
-	pytest tests
-test-code:
-	pytest src
-test-docs:
-	pytest docs
+test: ## Run pytest and doctests
+	uv run pytest
 
-#=> tox -- run all tox tests
-tox:
-	tox
+test-network: ## Run integration tests requiring live UTA access
+	uv run pytest -m network
 
+test-coverage: ## Run tests and generate coverage reports
+	uv run pytest --cov --cov-report=term-missing --cov-report=xml
+
+test-matrix: ## Test all supported Python versions with Nox
+	uv run nox
 
 ############################################################################
-#= UTILITY TARGETS
+#= DOCUMENTATION
 
-#=> reformat: reformat code with yapf and commit
-.PHONY: reformat
-reformat:
-	@if ! git diff --cached --exit-code >/dev/null; then echo "Repository not clean" 1>&2; exit 1; fi
-	black src tests
-	isort src tests
-	git commit -a -m "reformatted with black and isort"
+.PHONY: docs-serve docs-test docs-deploy
+docs-serve: ## Serve the documentation locally
+	uv run mkdocs serve
 
-#=> rename: rename files and substitute content for new repo name
-.PHONY: rename
-rename:
-	./sbin/rename-package
+docs-test: ## Build the documentation and fail on warnings
+	uv run mkdocs build --strict
 
-# #=> docs -- make sphinx docs
-# .PHONY: docs
-# docs: develop
-# 	# RTD makes json. Build here to ensure that it works.
-# 	make -C doc html json
+docs-deploy: ## Deploy documentation to GitHub Pages
+	uv run mkdocs gh-deploy --force
 
+############################################################################
+#= UTILITIES
+
+.PHONY: show-outdated-deps upgrade-deps bump-deps
+show-outdated-deps: ## List outdated dependencies
+	uv pip list --outdated
+
+upgrade-deps: ## Upgrade dependencies in the lockfile
+	uv lock --upgrade
+
+bump-deps: ## Update dependency minimums
+	uv run uv-bump
 
 ############################################################################
 #= CLEANUP
 
-#=> clean: remove temporary and backup files
-.PHONY: clean
-clean:
-	rm -frv **/*~ **/*.bak
+.PHONY: clean cleaner cleanest distclean
+clean: ## Remove temporary and backup files
+	find . \( -name '*~' -o -name '*.bak' \) -exec rm -frv {} +
 
-#=> cleaner: remove files and directories that are easily rebuilt
-.PHONY: cleaner
-cleaner: clean
-	rm -frv .cache build dist docs/_build
-	rm -frv **/__pycache__
-	rm -frv **/*.egg-info
-	rm -frv **/*.pyc
-	rm -frv **/*.orig
-	rm -frv **/*.rej
+cleaner: clean ## Remove rebuildable artifacts
+	rm -frv .cache .DS_Store .pytest_cache .ruff_cache build coverage.xml dist docs/_build site
+	find . \( -name __pycache__ -type d \) -exec rm -frv {} +
+	find . \( -name '*.pyc' -o -name '*.egg-info' -o -name '*.orig' -o -name '*.rej' \) -exec rm -frv {} +
 
-#=> cleanest: remove files and directories that are more expensive to rebuild
-.PHONY: cleanest
-cleanest: cleaner
-	rm -frv .eggs .tox venv
+cleanest: cleaner ## Remove virtual environments and tox/nox state
+	rm -frv .eggs .nox .venv venv .tox
 
-#=> distclean: remove untracked files and other detritus
-.PHONY: distclean
-distclean: cleanest
-	git clean -df
-
-## <LICENSE>
-## Copyright 2023 Source Code Committers
-## 
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-## 
-##     http://www.apache.org/licenses/LICENSE-2.0
-## 
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-## </LICENSE>
+distclean: cleanest ## Refuse to remove untracked files automatically
+	@echo 'Remove untracked files manually; git clean is intentionally disabled.'

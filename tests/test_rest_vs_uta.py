@@ -1,28 +1,30 @@
 import datetime
 import os
-from typing import Dict, List
+from pathlib import Path
 
-import hgvs.dataproviders.uta as uta
 import pytest
 import yaml
+from hgvs.dataproviders import uta
 from vcr.filters import decode_response
 
 import hgvs_dataproviders_rest.restclient as utarest
 
+pytestmark = pytest.mark.network
+
 os.environ["UTAREST_URL"] = "http://127.0.0.1:8000"  # Used in utarest.connect()
 
 
-def just_values(dictionaries: List[Dict]) -> List[List]:
+def just_values(dictionaries: list[dict]) -> list[list]:
     """Like the opposite of dict(), when dict() can't be used.
     (i.e. to compare just the values of a dictionary against a list of values)"""
     return [list(dictionary.values()) for dictionary in dictionaries]
 
 
-def equal_regardless_of_order(list, other):
+def equal_regardless_of_order(items, remaining):
     """To compare lists that are neither hashable or stortable."""
-    for item in list:
+    for item in items:
         try:
-            other.remove(item)
+            remaining.remove(item)
         except ValueError:
             return False
     return True
@@ -30,8 +32,8 @@ def equal_regardless_of_order(list, other):
 
 def yaml_decode(test_name: str) -> str:
     """Opens a yaml file, gets the response, and returns it decoded."""
-    file_path = ("tests/cassettes/{test}.yaml").format(test=test_name)
-    with open(file_path, "r") as f:
+    file_path = Path("tests/cassettes") / f"{test_name}.yaml"
+    with file_path.open() as f:
         yam = yaml.safe_load(f)
     response = yam["interactions"][0]["response"]
     yam_decode = decode_response(response)["body"]["string"]
@@ -119,7 +121,10 @@ def test_gene_info_ne():
 def test_tx_exons_e():
     """Existing seqs."""
     u = uta.connect().get_tx_exons("NM_199425.2", "NC_000020.10", "splign")
-    r = [list(t.values()) for t in utarest.connect().get_tx_exons("NM_199425.2", "NC_000020.10", "splign")]
+    r = [
+        list(t.values())
+        for t in utarest.connect().get_tx_exons("NM_199425.2", "NC_000020.10", "splign")
+    ]
     assert u == r
 
 
@@ -171,7 +176,10 @@ def test_tx_for_gene_ne():
 def test_tx_for_region_e():  # Need example
     """Existing region."""
     u = uta.connect().get_tx_for_region("NC_000007.13", "splign", 0, 50)
-    r = [list(t.values()) for t in utarest.connect().get_tx_for_region("NC_000007.13", "splign", 0, 50)]
+    r = [
+        list(t.values())
+        for t in utarest.connect().get_tx_for_region("NC_000007.13", "splign", 0, 50)
+    ]
     assert u == r
 
 
@@ -349,7 +357,7 @@ def test_assembly_map_ne():
     r = utarest.connect().get_assembly_map("GROUCH")
     assert "No such file or directory" in r["detail"]
     assert ".gz" in r["detail"]
-    with pytest.raises(Exception):
+    with pytest.raises(FileNotFoundError):
         uta.connect().get_assembly_map("GROUCH")
 
 
