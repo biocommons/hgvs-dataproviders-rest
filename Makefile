@@ -5,98 +5,152 @@
 .PRECIOUS:
 .SUFFIXES:
 
-SHELL:=/bin/bash -e -o pipefail
-SELF:=$(firstword $(MAKEFILE_LIST))
-
-PY_VERSION:=3
-
 .DEFAULT_GOAL := help
+default: help
+
+define INFO_MESSAGE
+	@echo "⏩\033[1;38;5;208m$(1)\033[0m"
+endef
 
 ############################################################################
 #= BASIC USAGE
 
 .PHONY: help
 help: ## Display help message
-	@./sbin/makefile-extract-documentation $(MAKEFILE_LIST)
+	@./sbin/makefile-extract-documentation ${MAKEFILE_LIST}
 
 ############################################################################
 #= SETUP, INSTALLATION, PACKAGING
 
-.PHONY: install devready
 install: devready
-devready: ## Prepare the development environment and install Git hooks
-	uv sync --dev --extra server
+.PHONY: devready
+devready: ## Prepare local dev env: Create virtual env, install the git hooks (prek)
+	$(call INFO_MESSAGE, Prepare local dev env: Create virtual env and install the git hooks (prek))
+	uv sync --dev
 	uv run prek install -f
-	@echo 'Activate the environment with: source .venv/bin/activate'
+	$(call INFO_MESSAGE, Activate the virtual env with \`source .venv/bin/activate\`)
 
-.PHONY: build publish
-build: ## Build the source distribution and wheel
+.PHONY: build
+build: ## Build package
+	$(call INFO_MESSAGE, "Build package")
+	rm -fr dist
 	uv build
 
-publish: build ## Publish distributions to PyPI (requires trusted publishing or UV_PUBLISH_TOKEN)
-	uv publish
+.PHONY: publish
+publish: build ## Publish package to PyPI
+	$(call INFO_MESSAGE, "Publish package to PyPI")
+	uv publish  # Requires UV_PUBLISH_TOKEN or Trusted Publishing setup
 
 ############################################################################
 #= FORMATTING, TESTING, AND CODE QUALITY
 
-.PHONY: cqa test test-network test-coverage test-matrix
-cqa: ## Check the lockfile, run hooks, and validate dependencies
+.PHONY: cqa
+cqa: ## Run code quality assessments
+	$(call INFO_MESSAGE, "Checking lock file consistency")
 	uv lock --locked
-	uv run prek run --all-files
+	$(call INFO_MESSAGE, "Linting and reformatting files")
+	uv run prek run
+	$(call INFO_MESSAGE, "Checking for obsolete dependencies")
 	uv run deptry src
 
-test: ## Run pytest and doctests
+.PHONY: test
+test: ## Test the code with pytest
+	@echo "🚀 Testing code: Running pytest"
 	uv run pytest
 
+.PHONY: test-network
 test-network: ## Run integration tests requiring live UTA access
 	uv run pytest -m network
 
-test-coverage: ## Run tests and generate coverage reports
+.PHONY: test-coverage
+test-coverage: ## Test the code with pytest and generate coverage report
+	@echo "🚀 Testing code: Running pytest with coverage"
 	uv run pytest --cov --cov-report=term-missing --cov-report=xml
 
-test-matrix: ## Test all supported Python versions with Nox
+.PHONY: test-matrix
+test-matrix: ## Test with each supported Python version (via nox)
+	@echo "🚀 Testing code: Testing supported versions with nox"
 	uv run nox
+
+# to be incorporated
+# test-learn:
+#	VCR_RECORD_MODE=new_episodes pytest -x
 
 ############################################################################
 #= DOCUMENTATION
 
-.PHONY: docs-serve docs-test docs-deploy
-docs-serve: ## Serve the documentation locally
+.PHONY: docs-serve
+docs-serve: ## Build and serve the documentation
+	$(call INFO_MESSAGE, "Build and serve docs for local development")
 	uv run mkdocs serve
 
-docs-test: ## Build the documentation and fail on warnings
-	uv run mkdocs build --strict
+.PHONY: docs-test
+docs-test: ## Test if documentation can be built without warnings or errors
+	$(call INFO_MESSAGE, "Testing whether docs can be build")
+	uv run mkdocs build -s
 
+.PHONY: docs-deploy
 docs-deploy: ## Deploy documentation to GitHub Pages
+	$(call INFO_MESSAGE, "Deploying docs to GitHub Pages")
 	uv run mkdocs gh-deploy --force
 
 ############################################################################
 #= UTILITIES
 
-.PHONY: show-outdated-deps upgrade-deps bump-deps
+.PHONY: show-outdated-deps
 show-outdated-deps: ## List outdated dependencies
+	$(call INFO_MESSAGE, "Listing outdated dependencies")
 	uv pip list --outdated
 
-upgrade-deps: ## Upgrade dependencies in the lockfile
+.PHONY: upgrade-deps
+upgrade-deps: ## Upgrade installed dependencies
+	$(call INFO_MESSAGE, "Upgrading dependencies")
 	uv lock --upgrade
 
-bump-deps: ## Update dependency minimums
+.PHONY: bump-deps
+bump-deps: ## Bumping versions of installed dependencies
+	$(call INFO_MESSAGE, "Bumping dependency versions")
 	uv run uv-bump
 
 ############################################################################
 #= CLEANUP
 
-.PHONY: clean cleaner cleanest distclean
-clean: ## Remove temporary and backup files
-	find . \( -name '*~' -o -name '*.bak' \) -exec rm -frv {} +
+.PHONY: clean
+clean:  ## Remove temporary and backup files
+	$(call INFO_MESSAGE, "Remove temporary and backup files")
+	find . \( -name "*~" -o -name "*.bak" \) -exec rm -frv {} +
 
-cleaner: clean ## Remove rebuildable artifacts
+.PHONY: cleaner
+cleaner: clean  ## Remove files and directories that are easily rebuilt
+	$(call INFO_MESSAGE, "Remove files and directories that are easily rebuilt")
 	rm -frv .cache .DS_Store .pytest_cache .ruff_cache build coverage.xml dist docs/_build site
 	find . \( -name __pycache__ -type d \) -exec rm -frv {} +
-	find . \( -name '*.pyc' -o -name '*.egg-info' -o -name '*.orig' -o -name '*.rej' \) -exec rm -frv {} +
+	find . \( -name "*.pyc" -o -name "*.egg-info" \) -exec rm -frv {} +
+	find . \( -name "*.orig" -o -name "*.rej" \) -exec rm -frv {} +
 
-cleanest: cleaner ## Remove virtual environments and tox/nox state
-	rm -frv .eggs .nox .venv venv .tox
+.PHONY: cleanest
+cleanest: cleaner  ## Remove files and directories that can be rebuilt
+	$(call INFO_MESSAGE, "Remove files and directories that can be rebuilt")
+	rm -frv .eggs .nox .venv venv
 
-distclean: cleanest ## Refuse to remove untracked files automatically
-	@echo 'Remove untracked files manually; git clean is intentionally disabled.'
+.PHONY: distclean
+distclean: cleanest  ## Remove untracked files and other detritus
+	@echo "❌ Remove untracked files and other detritus -- Too dangerous... do this yourself"
+	# git clean -df
+
+
+## <LICENSE>
+## Copyright 2026 Committers
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## you may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+##
+##     http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+## </LICENSE>

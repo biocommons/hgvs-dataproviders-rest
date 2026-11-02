@@ -1,113 +1,94 @@
-
-#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
-#   For a library or package, you might want to ignore these files since the code is
-#   However, in case of collaboration, if having platform-specific dependencies or dependencies
-#   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
-#   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
-#   This is especially recommended for binary packages to ensure reproducibility, and is more
-#   commonly ignored for libraries.
-#   having no cross-platform support, pipenv may install dependencies that don't work, or not
-#   https://pdm.fming.dev/#use-with-ide
-#   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
-#   in version control.
-#   install all needed dependencies.
-#   intended to run in multiple environments; otherwise, check them in:
-#   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
-#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
-#  Usually these files are written by a python script from a template
-#  and can be added to the global gitignore or merged into this file.  For a more nuclear
-#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-# .python-version
-# Byte-compiled / optimized / DLL files
-# C extensions
-# Celery stuff
-# Cython debug symbols
-# Distribution / packaging
-# Django stuff:
-# Environments
-# Flask stuff:
-# IPython
-# Installer logs
-# Jupyter Notebook
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
-# PyBuilder
-# PyCharm
-# PyInstaller
-# Pyre type checker
-# Rope project settings
-# SageMath parsed files
-# Scrapy stuff:
-# Sphinx documentation
-# Spyder project settings
-# Translations
-# Unit test / coverage reports
-# mkdocs documentation
-# mypy
-# pdm
-# pipenv
-# poetry
-# pyenv
-# pytype static type analyzer
-#.idea/
-#Pipfile.lock
-#pdm.lock
-#poetry.lock
 *$py.class
+*.bak
 *.cover
 *.egg
+*.egg-info
 *.egg-info/
+*.enc
 *.log
 *.manifest
 *.mo
+*.orig
 *.pot
-*.py,cover
-*.py[cod]
+*.py.cover
+*.py[codz]
+*.rej
 *.sage.py
 *.so
 *.spec
+*.sqlite3
+*.sqlite3-journal
+*~
+.DS_Store
 .Python
+.abstra/
 .cache
+.claude/
 .coverage
 .coverage.*
+.cursorignore
+.cursorindexingignore
 .dmypy.json
 .eggs/
 .env
+.envrc
 .hypothesis/
+.idea
 .installed.cfg
 .ipynb_checkpoints
+.keys
 .mypy_cache/
 .nox/
-.pdm.toml
+.pdm-build/
+.pdm-python
+.pixi
 .pybuilder/
+.pypirc
 .pyre/
+.pytest_cache
 .pytest_cache/
+.python-version
 .pytype/
 .ropeproject
+.ruff_cache/
 .scrapy
 .spyderproject
 .spyproject
+.tags
+.tags.mk
 .tox/
 .venv
+.vscode
 .webassets-cache
+/agents/
 /site
 ENV/
 MANIFEST
+__marimo__/
 __pycache__/
 __pypackages__/
+archive
+bdist
+bioutils/_data/assemblies/pull
+build
 build/
 celerybeat-schedule
 celerybeat.pid
 cover/
 coverage.xml
 cython_debug/
-db.sqlite3
-db.sqlite3-journal
 develop-eggs/
 dist/
 dmypy.json
+doc*/changelog/*/.tags
+doc*/changelog/*/.tags.mk
+doc/_build
+doc/build
+doc/changelog/*/.tags
+doc/changelog/*/.tags.mk
+doc/changelog/*/hg-git-remap.pl
 docs/_build/
+docs/source
 downloads/
 eggs/
 env.bak/
@@ -118,6 +99,9 @@ ipython_config.py
 lib/
 lib64/
 local_settings.py
+marimo/_lsp/
+marimo/_static/
+misc
 nosetests.xml
 parts/
 pip-delete-this-directory.txt
@@ -126,6 +110,7 @@ profile_default/
 sdist/
 share/python-wheels/
 target/
+tmp/
 var/
 venv.bak/
 venv/

@@ -13,5 +13,5 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v7
-      - name: Validate Codecov configuration
+      - name: Validate codecov configuration
         run: curl -sSL --fail-with-body --data-binary @codecov.yaml https://codecov.io/validate

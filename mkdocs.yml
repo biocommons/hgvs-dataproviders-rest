@@ -10,9 +10,15 @@ copyright: Maintained by <a href="https://biocommons.com">biocommons</a>.
 plugins:
   - search
   - awesome-nav
-
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: false
 theme:
   name: material
+  feature:
+    tabs: true
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
